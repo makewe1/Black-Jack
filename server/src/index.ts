@@ -142,61 +142,61 @@ function settle(
 
 // Start/Deal: body = { id?: string, bet: 10|50|100|500 }
 app.post("/api/games/start", (req, res) => {
-    const { id, bet } = req.body as { id?: string; bet: number };
+  const { id, bet } = req.body as { id?: string; bet: number };
 
-    // get existing game or create a new one
-    let g = id ? games.get(id) : undefined;
-    if (!g) {
-        g = {
-            id: randomUUID(),
-            deck: buildDeck(),
-            player: { cards: [] },
-            dealer: { visible: [], hidden: [] },
-            reveal: false,
-            status: "idle",
-            playerGold: 1000,
-            dealerGold: 1000,
-            currentBet: 0,
-        };
-        games.set(g.id, g);
-    }
+  // get existing game or create a new one
+  let g = id ? games.get(id) : undefined;
+  if (!g) {
+    g = {
+      id: randomUUID(),
+      deck: buildDeck(),
+      player: { cards: [] },
+      dealer: { visible: [], hidden: [] },
+      reveal: false,
+      status: "idle",
+      playerGold: 1000,
+      dealerGold: 1000,
+      currentBet: 0,
+    };
+    games.set(g.id, g);
+  }
 
-    // cannot start if a round is already in progress
-    if (g.status === "playing") {
-        return res.status(400).json({ error: "Round in progress" });
-    }
+  // cannot start if a round is already in progress
+  if (g.status === "playing") {
+    return res.status(400).json({ error: "Round in progress" });
+  }
 
-    // validate bet (allow any positive integer) and table coverage
-    if (!Number.isInteger(bet) || bet <= 0) {
-        return res.status(400).json({ error: "Invalid bet" });
-    }
-    if (bet > g.playerGold) {
-        return res.status(400).json({ error: "Insufficient funds (player)" });
-    }
-    if (bet > g.dealerGold) {
-        return res.status(400).json({ error: "Insufficient funds (dealer)" });
-    }
+  // validate + CLAMP bet to what both can cover
+  if (!Number.isInteger(bet) || bet <= 0) {
+    return res.status(400).json({ error: "Invalid bet" });
+  }
+  const tableMax = Math.min(g.playerGold, g.dealerGold);
+  const amount = Math.min(bet, tableMax);
+  if (amount === 0) {
+    return res.status(400).json({ error: "Insufficient funds" });
+  }
 
-    // (re)deal a fresh round
-    g.player.cards = [draw(g), draw(g)];
-    g.dealer.visible = [draw(g)];
-    g.dealer.hidden = [draw(g)];
-    g.reveal = false;
-    g.status = "playing";
-    g.currentBet = bet;
+  // deal using single-deck shoe (reshuffle only when empty)
+  g.player.cards = [draw(g), draw(g)];
+  g.dealer.visible = [draw(g)];
+  g.dealer.hidden  = [draw(g)];
+  g.reveal = false;
+  g.status = "playing";
+  g.currentBet = amount; // <- use clamped amount
 
-    // Natural blackjack checks
-    const ps = score(g.player.cards);
-    const ds = score([...g.dealer.visible, ...g.dealer.hidden]);
-    if (ps === 21 || ds === 21) {
-        g.reveal = true;
-        if (ps === 21 && ds !== 21) settle(g, "player_blackjack");
-        else if (ds === 21 && ps !== 21) settle(g, "dealer_blackjack");
-        else settle(g, "push");
-    }
+  // Natural blackjack checks
+  const ps = score(g.player.cards);
+  const ds = score([...g.dealer.visible, ...g.dealer.hidden]);
+  if (ps === 21 || ds === 21) {
+    g.reveal = true;
+    if (ps === 21 && ds !== 21) settle(g, "player_blackjack");
+    else if (ds === 21 && ps !== 21) settle(g, "dealer_blackjack");
+    else settle(g, "push");
+  }
 
-    res.json(publicState(g));
+  res.json(publicState(g));
 });
+
 
 app.post("/api/games/:id/hit", (req, res) => {
     const g = games.get(req.params.id);
