@@ -83,6 +83,14 @@ function dealerShouldHit(dealer: Card[]): boolean {
     return score(dealer) < 17;
 }
 
+function draw(g: Game): Card {
+    // Only reshuffle when the deck is empty
+    if (g.deck.length === 0) {
+        g.deck = buildDeck();
+    }
+    return g.deck.pop()!;
+}
+
 function publicState(g: Game) {
     const dealerAll = [...g.dealer.visible, ...g.dealer.hidden];
     return {
@@ -96,6 +104,7 @@ function publicState(g: Game) {
         playerGold: g.playerGold,
         dealerGold: g.dealerGold,
         currentBet: g.currentBet,
+        deckLeft: g.deck.length, // NEW
     };
 }
 
@@ -133,63 +142,61 @@ function settle(
 
 // Start/Deal: body = { id?: string, bet: 10|50|100|500 }
 app.post("/api/games/start", (req, res) => {
-  const { id, bet } = req.body as { id?: string; bet: number };
+    const { id, bet } = req.body as { id?: string; bet: number };
 
-  // get existing game or create a new one
-  let g = id ? games.get(id) : undefined;
-  if (!g) {
-    g = {
-      id: randomUUID(),
-      deck: buildDeck(),
-      player: { cards: [] },
-      dealer: { visible: [], hidden: [] },
-      reveal: false,
-      status: "idle",
-      playerGold: 1000,
-      dealerGold: 1000,
-      currentBet: 0,
-    };
-    games.set(g.id, g);
-  }
+    // get existing game or create a new one
+    let g = id ? games.get(id) : undefined;
+    if (!g) {
+        g = {
+            id: randomUUID(),
+            deck: buildDeck(),
+            player: { cards: [] },
+            dealer: { visible: [], hidden: [] },
+            reveal: false,
+            status: "idle",
+            playerGold: 1000,
+            dealerGold: 1000,
+            currentBet: 0,
+        };
+        games.set(g.id, g);
+    }
 
-  // cannot start if a round is already in progress
-  if (g.status === "playing") {
-    return res.status(400).json({ error: "Round in progress" });
-  }
+    // cannot start if a round is already in progress
+    if (g.status === "playing") {
+        return res.status(400).json({ error: "Round in progress" });
+    }
 
-  // validate bet (allow any positive integer) and table coverage
-  if (!Number.isInteger(bet) || bet <= 0) {
-    return res.status(400).json({ error: "Invalid bet" });
-  }
-  if (bet > g.playerGold) {
-    return res.status(400).json({ error: "Insufficient funds (player)" });
-  }
-  if (bet > g.dealerGold) {
-    return res.status(400).json({ error: "Insufficient funds (dealer)" });
-  }
+    // validate bet (allow any positive integer) and table coverage
+    if (!Number.isInteger(bet) || bet <= 0) {
+        return res.status(400).json({ error: "Invalid bet" });
+    }
+    if (bet > g.playerGold) {
+        return res.status(400).json({ error: "Insufficient funds (player)" });
+    }
+    if (bet > g.dealerGold) {
+        return res.status(400).json({ error: "Insufficient funds (dealer)" });
+    }
 
-  // (re)deal a fresh round
-  if (g.deck.length < 15) g.deck = buildDeck();
-  g.player.cards = [g.deck.pop()!, g.deck.pop()!];
-  g.dealer.visible = [g.deck.pop()!];
-  g.dealer.hidden = [g.deck.pop()!];
-  g.reveal = false;
-  g.status = "playing";
-  g.currentBet = bet;
+    // (re)deal a fresh round
+    g.player.cards = [draw(g), draw(g)];
+    g.dealer.visible = [draw(g)];
+    g.dealer.hidden = [draw(g)];
+    g.reveal = false;
+    g.status = "playing";
+    g.currentBet = bet;
 
-  // Natural blackjack checks
-  const ps = score(g.player.cards);
-  const ds = score([...g.dealer.visible, ...g.dealer.hidden]);
-  if (ps === 21 || ds === 21) {
-    g.reveal = true;
-    if (ps === 21 && ds !== 21) settle(g, "player_blackjack");
-    else if (ds === 21 && ps !== 21) settle(g, "dealer_blackjack");
-    else settle(g, "push");
-  }
+    // Natural blackjack checks
+    const ps = score(g.player.cards);
+    const ds = score([...g.dealer.visible, ...g.dealer.hidden]);
+    if (ps === 21 || ds === 21) {
+        g.reveal = true;
+        if (ps === 21 && ds !== 21) settle(g, "player_blackjack");
+        else if (ds === 21 && ps !== 21) settle(g, "dealer_blackjack");
+        else settle(g, "push");
+    }
 
-  res.json(publicState(g));
+    res.json(publicState(g));
 });
-
 
 app.post("/api/games/:id/hit", (req, res) => {
     const g = games.get(req.params.id);
@@ -197,7 +204,8 @@ app.post("/api/games/:id/hit", (req, res) => {
     if (g.status !== "playing")
         return res.status(400).json({ error: "Game over" });
 
-    g.player.cards.push(g.deck.pop()!);
+    g.player.cards.push(draw(g));
+
     if (score(g.player.cards) > 21) {
         g.reveal = true;
         settle(g, "player_bust");
@@ -216,7 +224,8 @@ app.post("/api/games/:id/stay", (req, res) => {
 
     let dealerAll = [...g.dealer.visible, ...g.dealer.hidden];
     while (dealerShouldHit(dealerAll)) {
-        dealerAll.push(g.deck.pop()!);
+        dealerAll.push(draw(g));
+
     }
     g.dealer.visible = dealerAll;
     g.dealer.hidden = [];
