@@ -152,7 +152,7 @@ export default function App() {
 
     // ----- UI -----
     return (
-        <div className="app">
+        <div className="game-page">
             <HeaderBar playerGold={playerGold} onBuy={buy} />
 
             <h1>Blackjack</h1>
@@ -163,6 +163,11 @@ export default function App() {
 
             {/* Table */}
             <div className="table">
+                {/* Deck counter (top center) */}
+                <div className="deck-counter-top">
+                    CARDS LEFT IN THE DECK:{" "}
+                    <span className="count">{deckLeft}</span>
+                </div>
                 <section>
                     <h2>
                         Dealer{" "}
@@ -221,7 +226,6 @@ export default function App() {
                 onDeal={onDeal}
                 onHit={onHit}
                 onStay={onStay}
-                /* NEW: bankroll + live preview */
                 playerGold={playerGold}
                 dealerGold={dealerGold}
                 displayPlayerGold={displayPlayerGold}
