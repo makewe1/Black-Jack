@@ -12,6 +12,39 @@ h1 { margin: 8px 0 4px; font-size: 56px; line-height: 1; }
 h2 { margin: 10px 0; }
 .deck-counter { text-align: right; color: #4d4d4d; margin-bottom: 6px; }
 
+/* clickable “+” with NO border/highlight */
+.plus-icon {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin-left: 4px;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent; /* mobile */
+  appearance: none;
+}
+
+/* remove any focus/active rings across browsers */
+.plus-icon:focus,
+.plus-icon:focus-visible,
+.plus-icon:active {
+  outline: none;
+  box-shadow: none;
+}
+
+/* firefox inner focus border */
+.plus-icon::-moz-focus-inner {
+  border: 0;
+}
+
+/* (optional) subtle hover color on the + itself (no box) */
+.plus-icon:hover { color: #ffd54d; }
+
+
 /* ---------- Table & card slots (always 5) ---------- */
 .table {
   position: relative;

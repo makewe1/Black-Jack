@@ -34,10 +34,10 @@ export default function HeaderBar({
                     style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 8,
+                        gap: 6,
                         background: "#1f1f1f",
                         color: "white",
-                        padding: "6px 10px",
+                        padding: "4px 8px", // tighter
                         borderRadius: 999,
                     }}
                 >
@@ -47,17 +47,8 @@ export default function HeaderBar({
                     <strong>{playerGold}</strong>
                     <button
                         onClick={() => setShowBuy(true)}
-                        style={{
-                            marginLeft: 6,
-                            width: 28,
-                            height: 28,
-                            borderRadius: "50%",
-                            border: "1px solid #555",
-                            background: "transparent",
-                            color: "white",
-                            cursor: "pointer",
-                        }}
-                        title="Buy chips"
+                        className="plus-icon"
+                        aria-label="Buy chips"
                     >
                         +
                     </button>
