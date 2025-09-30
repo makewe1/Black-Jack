@@ -243,4 +243,39 @@ app.post("/api/games/:id/stay", (req, res) => {
     res.json(publicState(g));
 });
 
+// Buy chips (adjust playerGold; does not affect dealerGold)
+app.post("/api/wallet/buy", (req, res) => {
+  const { id, amount } = req.body as { id?: string; amount: number };
+
+  // find or create a game session (reuse your existing initializer)
+  let g = id ? games.get(id) : undefined;
+  if (!g) {
+    g = {
+      id: randomUUID(),
+      deck: buildDeck(),
+      player: { cards: [] },
+      dealer: { visible: [], hidden: [] },
+      reveal: false,
+      status: "idle",
+      playerGold: 1000,
+      dealerGold: 1000,
+      currentBet: 0,
+    };
+    games.set(g.id, g);
+  }
+
+  const allowed = new Set([50, 100, 500, 1000, 5000, 10000]);
+  if (!allowed.has(amount)) {
+    return res.status(400).json({ error: "Invalid amount" });
+  }
+  if (g.status === "playing") {
+    // optional: forbid buying mid-round; remove this check if you want to allow it
+    return res.status(400).json({ error: "Cannot buy chips during an active round" });
+  }
+
+  g.playerGold += amount;
+  return res.json(publicState(g));
+});
+
+
 app.listen(PORT, () => console.log(`API http://localhost:${PORT}`));
