@@ -2,10 +2,11 @@
 import React, { useRef, Suspense, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
-import type { Mesh, Texture } from "three";
+import type { Mesh, Texture, Group } from "three";              
 import { MeshStandardMaterial } from "three";
 
 function CoinModel() {
+  const groupRef = useRef<Group>(null!);                      
   const meshRef = useRef<Mesh>(null!);
 
   // ensure the image exists at public/coin/my-coin-face.png
@@ -26,22 +27,28 @@ function CoinModel() {
   }, [faceTexture]);
 
   useFrame((_, delta) => {
-    if (!meshRef.current) return;
-    meshRef.current.rotation.x = Math.PI / 8;     // slight tilt so Y spin is visible
-    meshRef.current.rotation.y += delta * 2.0;    // *** Y-axis spin ***
+    if (!groupRef.current) return;
+    groupRef.current.rotation.y += delta * 2.0;                  // spin upright coin around Y
   });
 
   // material order for cylinder: [side, top cap, bottom cap]
   return (
-    <mesh ref={meshRef} material={[edgeMaterial, faceMaterial, faceMaterial]}>
-      <cylinderGeometry args={[1.5, 1.5, 0.22, 64]} />
-    </mesh>
+    <group ref={groupRef}>
+      {/* Stand the coin upright: rotate 90° around Z so faces look left/right */}
+      <mesh
+        ref={meshRef}
+        rotation={[0, 0, Math.PI / 2]}                           
+        material={[edgeMaterial, faceMaterial, faceMaterial]}
+      >
+        <cylinderGeometry args={[1.5, 1.5, 0.22, 64]} />
+      </mesh>
+    </group>
   );
 }
 
 export default function GoldCoinLogo() {
   return (
-    <div style={{ width: 320, height: 320 }}>
+    <div style={{ width: 380, height: 380 }}>
       <Canvas frameloop="always" camera={{ fov: 30, position: [0, 0, 8] }}>
         <ambientLight intensity={1.1} />
         <pointLight position={[5, 5, 5]} intensity={60} />
