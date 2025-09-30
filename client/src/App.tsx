@@ -144,7 +144,10 @@ export default function App() {
             return;
         }
         const r: ApiState = await resp.json();
-        apply(r);
+        // only touch wallet + deck counter
+        setPlayerGold(r.playerGold);
+        setDeckLeft(r.deckLeft ?? deckLeft);
+        // do NOT call apply(r) here
     }
 
     // ----- UI -----

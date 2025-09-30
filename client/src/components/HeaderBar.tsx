@@ -141,6 +141,8 @@ export default function HeaderBar({
                             {[50, 100, 500, 1000, 5000, 10000].map((a) => (
                                 <button
                                     key={a}
+                                    type="button"
+                                    onMouseDown={(e) => e.preventDefault()}
                                     onClick={() => {
                                         onBuy(a);
                                     }}
