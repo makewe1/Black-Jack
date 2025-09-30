@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { randomUUID } from "node:crypto";
+import authRoutes from "./auth.js";
 
 type Card = string; // e.g. "A-S", "10-H"
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";
@@ -22,6 +23,7 @@ type Game = {
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 
 const games = new Map<string, Game>();
 const PORT = 5174;
