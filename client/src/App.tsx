@@ -1,8 +1,10 @@
+// client/src/App.tsx
 import { useEffect, useState } from "react";
 import "./App.css";
 import HeaderBar from "./components/HeaderBar";
 import BottomBar from "./components/BottomBar";
 import ResultBanner from "./components/ResultBanner";
+import GamePanel from "./components/GamePanel";
 
 type Card = string;
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";
@@ -155,65 +157,19 @@ export default function App() {
         <div className="game-page">
             <HeaderBar playerGold={playerGold} onBuy={buy} />
 
-            <h1>Blackjack</h1>
+            <h1 className="game-title">Black Jack</h1>
 
-            <div style={{ marginBottom: 12 }}>
-                Cards left in the deck: <strong>{deckLeft}</strong>
-            </div>
+            {/* Game table panel */}
+            <GamePanel
+                status={status}
+                reveal={reveal}
+                dealerVisible={dealerVisible}
+                dealerCount={dealerCount}
+                playerCards={playerCards}
+                playerCount={playerCount}
+                deckLeft={deckLeft}
+            />
 
-            {/* Table */}
-            <div className="table">
-                {/* Deck counter (top center) */}
-                <div className="deck-counter-top">
-                    CARDS LEFT IN THE DECK:{" "}
-                    <span className="count">{deckLeft}</span>
-                </div>
-                <section>
-                    <h2>
-                        Dealer{" "}
-                        {reveal && dealerCount !== undefined
-                            ? `(${dealerCount})`
-                            : ""}
-                    </h2>
-                    <div className="cards">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <div className="slot" key={i}>
-                                {dealerVisible[i] ? (
-                                    <img
-                                        src={
-                                            reveal
-                                                ? `/cards/${dealerVisible[i]}.png`
-                                                : i === 0
-                                                ? `/cards/${dealerVisible[i]}.png`
-                                                : "/cards/BACK.png"
-                                        }
-                                        alt={dealerVisible[i]}
-                                    />
-                                ) : null}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <section>
-                    <h2>You ({playerCount})</h2>
-                    <div className="cards">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <div className="slot" key={i}>
-                                {playerCards[i] ? (
-                                    <img
-                                        src={`/cards/${playerCards[i]}.png`}
-                                        alt={playerCards[i]}
-                                    />
-                                ) : null}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Win/Lose/Draw banner */}
-                <ResultBanner status={status} />
-            </div>
             <BottomBar
                 status={status}
                 chips={chips}
