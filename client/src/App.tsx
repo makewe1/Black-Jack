@@ -168,6 +168,7 @@ export default function App() {
                 playerCards={playerCards}
                 playerCount={playerCount}
                 deckLeft={deckLeft}
+                currentBet={currentBet}
             />
 
             <BottomBar

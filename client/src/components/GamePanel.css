@@ -1,136 +1,174 @@
 /* ---------------------------
-   Game Panel container (wood frame + green felt)
+   Game Panel container
 ---------------------------- */
 .game-panel {
-    margin: 16px 0;
-    padding: 24px;
-    border-radius: 32px;
-    background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 80%);
-    border: 20px solid transparent;
-    border-image: url("/assets/wood-frame.png") 40 round; /* wood texture frame */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    position: relative;
+  margin: 16px 0;
+  padding: 24px;
+  border-radius: 32px;
+  background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 80%);
+  border: 20px solid transparent;
+  border-image: url("/assets/wood-frame.png") 40 round;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 1fr 220px; /* left table + right bet column */
+  column-gap: 16px;
 }
 
 /* ---------------------------
-   Deck counter (top-right golden text)
+   Deck counter
 ---------------------------- */
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+
 .deck-counter-top {
-    position: absolute;
-    top: 12px;
-    right: 24px;
-
-    font-size: 1.4rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: #d2691e; /* same base as Dealer/You label */
-    letter-spacing: 1px;
-
-    text-shadow: -1px -1px 0 #3b1d0f, 1px -1px 0 #3b1d0f, -1px 1px 0 #3b1d0f,
-        1px 1px 0 #3b1d0f;
+  font-size: 1.4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #d2691e;
+  letter-spacing: 1px;
+  text-shadow: -1px -1px 0 #3b1d0f, 1px -1px 0 #3b1d0f,
+               -1px 1px 0 #3b1d0f, 1px 1px 0 #3b1d0f;
 }
-
 .deck-counter-top .count {
-    margin-left: 6px;
-    color: #ffcc33; /* golden yellow number */
-    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
-}
-/* ---- ROW LAYOUT (aligned columns) ---- */
-.game-panel section.row {
-    display: grid;
-    grid-template-columns: 180px 1fr; /* wider fixed label column */
-    align-items: center;
-    margin: 28px 0; /* more vertical room between rows */
-    column-gap: 24px; /* more space between label and cards */
+  margin-left: 6px;
+  color: #ffcc33;
+  text-shadow: 0 2px 2px rgba(0,0,0,0.6);
 }
 
-/* ---- LABEL STYLE ---- */
-.game-panel section.row h2 {
-    margin: 0;
-    white-space: nowrap; /* keep "DEALER: 0" on one line */
-    font-size: 1.6rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: #d2691e;
-    letter-spacing: 1px;
-
-    /* right-align the label block within the left column */
-    text-align: right;
-    justify-self: end;
-    padding-right: 2px;
-
-    text-shadow: -1px -1px 0 #3b1d0f, 1px -1px 0 #3b1d0f, -1px 1px 0 #3b1d0f,
-        1px 1px 0 #3b1d0f;
+/* ---------------------------
+   Bet Panel (right side)
+---------------------------- */
+.bet-col {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* keep the number golden and spaced from the label */
-.game-panel section.row .count {
-    margin-left: 8px;
-    color: #ffcc33;
-    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+.bet-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* ---- CARD GRID ---- */
-.game-panel section.row .cards {
-    display: grid;
-    grid-template-columns: repeat(5, 100px);
-    gap: 8px;
-    justify-content: flex-start;
+.bet-pill .coin-icon {
+  font-size: 1.8rem;
+  color: gold;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7));
 }
 
-/* ---- VERTICAL ANCHORING PER ROW ---- */
-/* Dealer row (first): push label to the bottom of its row */
-.game-panel section.row:first-of-type h2 {
-    align-self: end;
+.bet-pill .bet-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffcc33;
+  text-shadow: 0 2px 2px rgba(0,0,0,0.6);
 }
 
-/* You row (second): keep label at the top of its row */
-.game-panel section.row:last-of-type h2 {
-    align-self: start;
+/* ---------------------------
+   Table (left)
+---------------------------- */
+.table {
+  grid-column: 1;
+  position: relative;
+  padding-right: 4px;
 }
 
-/* ---- Card slot (unchanged) ---- */
+.table section.row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
+  margin: 28px 0;
+  column-gap: 24px;
+}
+
+.table section.row h2 {
+  margin: 0;
+  white-space: nowrap;
+  font-size: 1.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #d2691e;
+  letter-spacing: 1px;
+  text-align: right;
+  justify-self: end;
+  padding-right: 2px;
+  text-shadow: -1px -1px 0 #3b1d0f, 1px -1px 0 #3b1d0f,
+               -1px 1px 0 #3b1d0f, 1px 1px 0 #3b1d0f;
+}
+.table section.row .count {
+  margin-left: 8px;
+  color: #ffcc33;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+}
+
+.table section.row .cards {
+  display: grid;
+  grid-template-columns: repeat(5, 100px);
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.table section.row:first-of-type h2 { align-self: end; }
+.table section.row:last-of-type h2 { align-self: start; }
+
+/* ---------------------------
+   Card slots
+---------------------------- */
 .slot {
-    width: 100px;
-    height: 140px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px dashed rgba(255, 255, 255, 0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100px;
+  height: 140px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .slot img {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* ---- Responsive tweaks ---- */
-@media (max-width: 720px) {
-    .game-panel section.row {
-        grid-template-columns: 150px 1fr;
-        column-gap: 16px;
-    }
-    .game-panel section.row .cards {
-        grid-template-columns: repeat(5, 80px);
-    }
-    .slot {
-        width: 80px;
-        height: 112px;
-    }
+/* ---------------------------
+   Responsive
+---------------------------- */
+@media (max-width: 900px) {
+  .game-panel { grid-template-columns: 1fr; }
+  .bet-col { justify-content: flex-end; }
+  .bet-pill { margin-top: 8px; }
 }
+
+@media (max-width: 720px) {
+  .table section.row {
+    grid-template-columns: 150px 1fr;
+    column-gap: 16px;
+  }
+  .table section.row .cards {
+    grid-template-columns: repeat(5, 80px);
+  }
+  .slot { width: 80px; height: 112px; }
+}
+
 @media (max-width: 520px) {
-    .game-panel section.row {
-        grid-template-columns: 130px 1fr;
-        column-gap: 12px;
-    }
-    .game-panel section.row .cards {
-        grid-template-columns: repeat(5, 64px);
-    }
-    .slot {
-        width: 64px;
-        height: 90px;
-    }
+  .table section.row {
+    grid-template-columns: 130px 1fr;
+    column-gap: 12px;
+  }
+  .table section.row .cards {
+    grid-template-columns: repeat(5, 64px);
+  }
+  .slot { width: 64px; height: 90px; }
 }
