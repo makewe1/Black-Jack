@@ -1,0 +1,85 @@
+.buy-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Modal container */
+.buy-modal {
+  width: 500px;
+  max-width: 92vw;
+  border-radius: 16px;
+  border: 2px solid #3b2d66; /* dark purple border */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(180deg, #3e2d5c, #2b1f42 80%);
+  padding: 24px;
+  color: #fff;
+  position: relative;
+  text-align: center;
+}
+
+/* Header */
+.buy-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.buy-modal-head h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffcc33; /* gold highlight */
+  margin: 0;
+}
+
+/* Close button */
+.buy-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.buy-close:hover {
+  color: #ffcc33;
+}
+
+/* Subtitle */
+.buy-sub {
+  margin: 10px 0 20px;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+/* Button grid */
+.buy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Buy buttons */
+.buy-grid button {
+  height: 60px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(180deg, #5e46a1, #3c2f70);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.buy-grid button:hover {
+  background: linear-gradient(180deg, #6a52b5, #46357d);
+  transform: scale(1.05);
+}

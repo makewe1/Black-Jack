@@ -1,4 +1,5 @@
 import React from "react";
+import "./BottomBar.css";
 
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";
 

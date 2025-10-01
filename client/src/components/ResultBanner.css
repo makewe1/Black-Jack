@@ -1,0 +1,84 @@
+/* ResultBanner component styles
+   Uses CSS variables from App.css (e.g., --gold) if defined
+*/
+
+.banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 36px;
+  border-radius: 18px;
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  z-index: 50;
+
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    inset 0 0 12px rgba(255, 255, 255, 0.12);
+
+  animation: fadeInOut 2s ease forwards;
+}
+
+.banner span {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Status variants */
+.banner-won {
+  background: linear-gradient(180deg, #2e7d32, #1b5e20);
+  border: 3px solid #66bb6a;
+  color: #f1ffe6;
+}
+
+.banner-lost {
+  background: linear-gradient(180deg, #c62828, #8e0000);
+  border: 3px solid #ef5350;
+  color: #fff5f5;
+}
+
+.banner-tie {
+  background: linear-gradient(180deg, #616161, #424242);
+  border: 3px solid #bdbdbd;
+  color: #f0f0f0;
+}
+
+/* Fade in/out animation */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .banner {
+    font-size: 1.6rem;
+    padding: 16px 24px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 520px) {
+  .banner {
+    font-size: 1.3rem;
+    padding: 12px 20px;
+    border-radius: 12px;
+  }
+}

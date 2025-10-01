@@ -1,0 +1,86 @@
+.headerbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 16px;
+
+    /* Wood-like background (simplified) */
+    background: linear-gradient(180deg, #8d5e2a, #5d3a1a 70%);
+    border-radius: 12px;
+    border: 3px solid #3e2812;
+
+    /* Shadow for depth */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+/* "Gold: ####" display pill */
+.gold-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: linear-gradient(180deg, #c9983c, #a2721d);
+    border: 2px solid #4e3410;
+    border-radius: 8px;
+    padding: 4px 12px;
+
+    font-weight: 800;
+    color: #fff4c2;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* the coin emoji/icon */
+.gold-pill span[role="img"] {
+    font-size: 1.3rem;
+}
+
+/* Gold number highlight */
+.gold-pill strong {
+    color: #ffdf58;
+}
+
+/* The "+" buy button */
+.plus-icon {
+    display: flex; /* make the button itself a flexbox */
+    align-items: center; /* center the "+" inside */
+    justify-content: center;
+
+    font-size: 1.6rem;
+    font-weight: bold;
+    /* color: var(--gold); */
+    transform: translateY(-2px);
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.plus-icon:hover {
+    color: #fff176; /* lighter yellow on hover */
+}
+
+.plus-icon:active {
+    transform: scale(0.95);
+}
+/* Right side auth buttons */
+.authbar {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+}
+
+.authbar button {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 2px solid #3e2812;
+    background: linear-gradient(180deg, #7a4d1e, #5d3616);
+    color: #ffeaa7;
+    font-weight: 700;
+    cursor: pointer;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+.authbar button:hover {
+    filter: brightness(1.08);
+}
