@@ -2,128 +2,135 @@
    Game Panel container (wood frame + green felt)
 ---------------------------- */
 .game-panel {
-  margin: 16px 0;
-  padding: 24px;
-  border-radius: 32px;
-  background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 80%);
-  border: 20px solid transparent;
-  border-image: url("/assets/wood-frame.png") 40 round; /* wood texture frame */
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-  position: relative;
+    margin: 16px 0;
+    padding: 24px;
+    border-radius: 32px;
+    background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 80%);
+    border: 20px solid transparent;
+    border-image: url("/assets/wood-frame.png") 40 round; /* wood texture frame */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    position: relative;
 }
 
 /* ---------------------------
    Deck counter (top-right golden text)
 ---------------------------- */
 .deck-counter-top {
-  position: absolute;
-  top: 12px;
-  right: 24px;
-  font-weight: 700;
-  color: #ffb347;
-  font-size: 1rem;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
+    position: absolute;
+    top: 12px;
+    right: 24px;
+
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #d2691e; /* same base as Dealer/You label */
+    letter-spacing: 1px;
+
+    text-shadow: -1px -1px 0 #3b1d0f, 1px -1px 0 #3b1d0f, -1px 1px 0 #3b1d0f,
+        1px 1px 0 #3b1d0f;
 }
 
-/* ---------------------------
-   Dealer / Player labels
----------------------------- */
-.game-panel section h2 {
-  font-size: 1.4rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  color: #d2691e; /* base brown/orange */
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-
-  /* outline / shadow effect */
-  text-shadow:
-    -1px -1px 0 #3b1d0f,
-     1px -1px 0 #3b1d0f,
-    -1px  1px 0 #3b1d0f,
-     1px  1px 0 #3b1d0f;
+.deck-counter-top .count {
+    margin-left: 6px;
+    color: #ffcc33; /* golden yellow number */
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+}
+/* ---- ROW LAYOUT (aligned columns) ---- */
+.game-panel section.row {
+    display: grid;
+    grid-template-columns: 180px 1fr; /* wider fixed label column */
+    align-items: center;
+    margin: 28px 0; /* more vertical room between rows */
+    column-gap: 24px; /* more space between label and cards */
 }
 
-/* The counts (numbers) */
-.game-panel section h2 .count,
-.game-panel section span.count {
-  color: #ffcc33; /* golden yellow */
-  text-shadow: 0 2px 2px rgba(0,0,0,0.6);
+/* ---- LABEL STYLE ---- */
+.game-panel section.row h2 {
+    margin: 0;
+    white-space: nowrap; /* keep "DEALER: 0" on one line */
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #d2691e;
+    letter-spacing: 1px;
+
+    /* right-align the label block within the left column */
+    text-align: right;
+    justify-self: end;
+    padding-right: 2px;
+
+    text-shadow: -1px -1px 0 #3b1d0f, 1px -1px 0 #3b1d0f, -1px 1px 0 #3b1d0f,
+        1px 1px 0 #3b1d0f;
 }
 
-/* ---------------------------
-   Card grid
----------------------------- */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(5, 100px);
-  justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
+/* keep the number golden and spaced from the label */
+.game-panel section.row .count {
+    margin-left: 8px;
+    color: #ffcc33;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
 }
 
+/* ---- CARD GRID ---- */
+.game-panel section.row .cards {
+    display: grid;
+    grid-template-columns: repeat(5, 100px);
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+/* ---- VERTICAL ANCHORING PER ROW ---- */
+/* Dealer row (first): push label to the bottom of its row */
+.game-panel section.row:first-of-type h2 {
+    align-self: end;
+}
+
+/* You row (second): keep label at the top of its row */
+.game-panel section.row:last-of-type h2 {
+    align-self: start;
+}
+
+/* ---- Card slot (unchanged) ---- */
 .slot {
-  width: 100px;
-  height: 140px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px dashed rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100px;
+    height: 140px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 .slot img {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* ---------------------------
-   Bankroll panels (dealer & player gold)
----------------------------- */
-.bankrolls {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-}
-
-.bankroll-panel {
-  background: url("/assets/wood-plate.png") center/cover no-repeat;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-weight: 700;
-  color: #ffd700;
-  font-size: 1rem;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-  min-width: 120px;
-  text-align: center;
-}
-
-/* ---------------------------
-   Responsive tweaks
----------------------------- */
+/* ---- Responsive tweaks ---- */
 @media (max-width: 720px) {
-  .cards {
-    grid-template-columns: repeat(5, 80px);
-  }
-  .slot {
-    width: 80px;
-    height: 112px;
-  }
+    .game-panel section.row {
+        grid-template-columns: 150px 1fr;
+        column-gap: 16px;
+    }
+    .game-panel section.row .cards {
+        grid-template-columns: repeat(5, 80px);
+    }
+    .slot {
+        width: 80px;
+        height: 112px;
+    }
 }
-
 @media (max-width: 520px) {
-  .cards {
-    grid-template-columns: repeat(5, 64px);
-  }
-  .slot {
-    width: 64px;
-    height: 90px;
-  }
+    .game-panel section.row {
+        grid-template-columns: 130px 1fr;
+        column-gap: 12px;
+    }
+    .game-panel section.row .cards {
+        grid-template-columns: repeat(5, 64px);
+    }
+    .slot {
+        width: 64px;
+        height: 90px;
+    }
 }

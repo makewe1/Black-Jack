@@ -33,7 +33,7 @@ export default function GamePanel({
             </div>
 
             {/* Dealer side */}
-            <section>
+            <section className="row">
                 <h2 className="scoreline">
                     Dealer:{" "}
                     <span className="count">
@@ -61,11 +61,10 @@ export default function GamePanel({
             </section>
 
             {/* Player side */}
-            <section>
+            <section className="row">
                 <h2 className="scoreline">
                     You: <span className="count">{playerCount}</span>
                 </h2>
-
                 <div className="cards">
                     {Array.from({ length: 5 }).map((_, i) => (
                         <div className="slot" key={i}>
