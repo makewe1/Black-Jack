@@ -3,44 +3,47 @@ import { useNavigate } from "react-router-dom";
 import "./HeaderBar.css";
 import BuyModal from "./BuyModal";
 
-export default function HeaderBar({
-  playerGold,
-  onBuy,
-}: {
+type Props = {
   playerGold: number;
   onBuy: (amount: number) => void;
-}) {
-  const navigate = useNavigate();
-  const [showBuy, setShowBuy] = useState(false);
-  const token = localStorage.getItem("token");
+  /** Optional: parent can open a side/menu sheet, etc. */
+  onMenuClick?: () => void;
+};
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    navigate("/", { replace: true });
-  }
+// ...imports stay the same
+export default function HeaderBar({ playerGold, onBuy, onMenuClick }: Props) {
+  const [showBuy, setShowBuy] = useState(false);
 
   return (
     <>
-      <div className="headerbar">
-        <div className="gold-pill">
-          <span role="img" aria-label="coin">🪙</span>
-          <strong>{playerGold}</strong>
-          <button onClick={() => setShowBuy(true)} className="plus-icon">+</button>
-        </div>
+      <header className="headerbar">
+        <div className="headerbar-content">
+          {/* left: gold pill */}
+          <div className="gold-pill">
+            <span role="img" aria-label="coin">🪙</span>
+            <strong>{playerGold}</strong>
+            <button
+              onClick={() => setShowBuy(true)}
+              className="plus-icon"
+              aria-label="Buy chips"
+            >
+              +
+            </button>
+          </div>
 
-        <div className="authbar">
-          {!token ? (
-            <>
-              <button onClick={() => navigate("/login")}>Login</button>
-              <button onClick={() => navigate("/signup")}>Sign Up</button>
-            </>
-          ) : (
-            <button onClick={handleLogout}>Logout</button>
-          )}
+          {/* right: hamburger */}
+          <button
+            className="menu-button"
+            aria-label="Open menu"
+            onClick={onMenuClick ?? (() => {})}
+          >
+            <span/><span/><span/>
+          </button>
         </div>
-      </div>
+      </header>
 
       {showBuy && <BuyModal onClose={() => setShowBuy(false)} onBuy={onBuy} />}
     </>
   );
 }
+

@@ -1,36 +1,28 @@
+/* Make bar span the page and push items to ends */
 .headerbar {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 10px 20px;
-    margin-bottom: 16px;
-
-    /* Wood-like background (simplified) */
-    background: linear-gradient(180deg, #8d5e2a, #5d3a1a 70%);
-    border-radius: 12px;
-    border: 3px solid #3e2812;
-
-    /* Shadow for depth */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6),
-        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  width: 100%;
+  position: relative;          /* keep it in normal flow; change to fixed if you pin it */
+  z-index: 50;
 }
 
-/* "Gold: ####" display pill */
+.headerbar-content {
+  max-width: 1200px;           /* optional: center within a container */
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* <-- left & right */
+  gap: 16px;                       /* safety distance on small screens */
+}
+
+/* Ensure the gold pill doesn't add unintended margins */
 .gold-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    background: linear-gradient(180deg, #c9983c, #a2721d);
-    border: 2px solid #4e3410;
-    border-radius: 8px;
-    padding: 4px 12px;
-
-    font-weight: 800;
-    color: #fff4c2;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;                      /* remove any external margins */
 }
+
 
 /* the coin emoji/icon */
 .gold-pill span[role="img"] {
@@ -63,24 +55,41 @@
 .plus-icon:active {
     transform: scale(0.95);
 }
-/* Right side auth buttons */
-.authbar {
-    margin-left: auto;
-    display: flex;
-    gap: 10px;
+/* Hamburger button */
+.menu-button {
+  margin: 0;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px; /* tighter spacing */
+  padding: 0;
 }
 
-.authbar button {
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 2px solid #3e2812;
-    background: linear-gradient(180deg, #7a4d1e, #5d3616);
-    color: #ffeaa7;
-    font-weight: 700;
-    cursor: pointer;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+.menu-button:hover { filter: brightness(1.08); }
+.menu-button:active { transform: translateY(1px) scale(0.97); }
+.menu-button:focus { outline: none; }
+
+/* Each bar */
+.menu-button span {
+  display: block;
+  width: 26px;      /* narrower */
+  height: 7px;      /* thinner */
+  border-radius: 6px;
+
+  background: linear-gradient(180deg, #c2894a, #7d4d23);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
-.authbar button:hover {
-    filter: brightness(1.08);
+If your page has side padding, let header visually align with it
+@media (min-width: 768px) {
+  .headerbar-content { padding: 12px 32px; }
 }
