@@ -1,38 +1,93 @@
+/* ===== Backdrop ===== */
 .sidemenu-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 50;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 50;
 }
-
 .sidemenu-backdrop.open {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* RIGHT side version */
+/* ===== Right-side menu panel ===== */
 .sidemenu-panel {
-    position: absolute;
-    top: 0;
-    right: -250px; /* start hidden off-screen */
-    width: 250px;
-    height: 100%;
-    background: #1e1e25;
-    color: white;
-    transition: right 0.3s;
-    padding: 1rem;
+  position: absolute;
+  top: 0;
+  right: -280px;
+  width: 280px;
+  height: 100%;
+  background: #3a245d;  /* dark purple instead of black */
+  color: white;
+  transition: right 0.3s ease;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
 .sidemenu-panel.open {
-    right: 0; /* slide in */
+  right: 0;
 }
 
+/* ===== Cartoon red X button (no circle background) ===== */
 .sidemenu-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
+  align-self: flex-start;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ff4d4d; /* bright red */
+  text-shadow: 
+    -2px -2px 0 #8c0000,
+     2px -2px 0 #8c0000,
+    -2px  2px 0 #8c0000,
+     2px  2px 0 #8c0000; /* dark outline for cartoon look */
+  line-height: 1;
+  transition: transform 0.1s, filter 0.2s;
+}
+.sidemenu-close:hover {
+  filter: brightness(1.2);
+}
+.sidemenu-close:active {
+  transform: scale(0.9);
+}
+
+/* ===== Menu list ===== */
+.sidemenu-list {
+  list-style: none;
+  padding: 0;
+  margin: 3rem 0 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* ===== Buttons ===== */
+.sidemenu-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  border-radius: 8px;
+  border: 2px solid #5d3ebc;
+  background: linear-gradient(to bottom, #7a5dc7, #4b2a99); /* purple default */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.1s, background 0.3s;
+}
+
+.sidemenu-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(to bottom, #6bd66b, #2e8b2e); /* green hover */
+}
+
+.sidemenu-btn:active {
+  transform: translateY(1px);
 }
