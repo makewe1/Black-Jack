@@ -1,0 +1,38 @@
+.sidemenu-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 50;
+}
+
+.sidemenu-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* RIGHT side version */
+.sidemenu-panel {
+    position: absolute;
+    top: 0;
+    right: -250px; /* start hidden off-screen */
+    width: 250px;
+    height: 100%;
+    background: #1e1e25;
+    color: white;
+    transition: right 0.3s;
+    padding: 1rem;
+}
+
+.sidemenu-panel.open {
+    right: 0; /* slide in */
+}
+
+.sidemenu-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+}

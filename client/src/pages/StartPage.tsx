@@ -1,28 +1,56 @@
 // src/pages/StartPage.tsx
 import { useNavigate } from "react-router-dom";
+import "../styles/GameButton.css";
 
 export default function StartPage() {
-  const nav = useNavigate();
-  return (
-    <div className="min-h-screen w-full grid place-items-center bg-gray-900 text-white p-6">
-      <div className="max-w-md w-full text-center space-y-6">
-        <h1 className="text-5xl text-yellow-400" style={{ fontFamily: '"Alex Brush", cursive' }}>
-          Ready to start?
-        </h1>
-        <p className="text-gray-300">
-          You’re signed in / visiting as guest. Click continue to enter the table.
-        </p>
-        <button
-          onClick={() => nav("/play")}
-          className="w-full p-3 uppercase font-extrabold text-white 
-                     bg-gradient-to-b from-purple-400 to-purple-800 
-                     border-[3px] border-yellow-900 rounded-md 
-                     shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),0_2px_4px_rgba(0,0,0,0.8)] 
-                     transition-all duration-300 hover:from-green-400 hover:to-green-700"
+    const nav = useNavigate();
+
+    return (
+        <div
+            className="min-h-screen w-full flex items-center justify-center bg-cover bg-center text-white p-6"
+            style={{ backgroundImage: "url('/bg-start.png')" }}
         >
-          Continue to Game
-        </button>
-      </div>
-    </div>
-  );
+            {/* Left: Icon */}
+            <div className="flex flex-col items-center justify-center mr-32">
+                <img
+                    src="/bg-coin.png"
+                    alt="Blackjack Coin Icon"
+                    className="w-80 h-auto drop-shadow-2xl"
+                />
+            </div>
+
+            {/* Right: Title + Buttons */}
+            <div className="flex flex-col items-center space-y-6 max-w-md w-full">
+                <h1 className="blackjack-style text-7xl">Black Jack</h1>
+
+                <div className="relative game-button-container">
+                    <button
+                        className="game-button"
+                        onClick={() => nav("/play")}
+                    >
+                        CONTINUE
+                    </button>
+                </div>
+
+                <div className="relative game-button-container">
+                    <button
+                        className="game-button"
+                        onClick={() => nav("/play?new=true")}
+                    >
+                        NEW GAME
+                    </button>
+                </div>
+
+                <div className="relative game-button-container">
+                    <button className="game-button">HISTORY</button>
+                </div>
+
+                <div className="relative game-button-container">
+                    <button className="game-button" onClick={() => nav("/")}>
+                        EXIT
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }

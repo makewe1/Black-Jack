@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import GoldCoinLogo from "../components/GoldCoinLogo";
-import "@fontsource/alex-brush";
+import "@fontsource/alex-brush"; // you can remove if unused
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
+// import "./HomePage.css"; // import the custom css
+import "@fontsource/montez";
 
 interface ModalState {
     isVisible: boolean;
@@ -49,11 +51,9 @@ const HomePage: React.FC = () => {
         message: "",
     });
 
-    // NEW: login modal toggle
     const [showLogin, setShowLogin] = useState(false);
     const [showSignup, setShowSignup] = useState(false);
 
-    // lock body scroll when modal open (nice-to-have)
     useEffect(() => {
         const prev = document.body.style.overflow;
         document.body.style.overflow = showLogin ? "hidden" : prev || "";
@@ -93,11 +93,11 @@ const HomePage: React.FC = () => {
 
             {/* Right: title + buttons */}
             <div className="flex flex-col items-center gap-6 w-full max-w-xs">
-                <h1 className="font-calligraphy text-6xl md:text-7xl text-yellow-400 drop-shadow-[0_2px_2px_rgba(0,0,0,0.7)] mb-6">
+                {/* ✅ now using custom css class */}
+                <h1 className="blackjack-style text-7xl md:text-8xl mb-6">
                     Black Jack
                 </h1>
 
-                {/* CHANGE: use <button> (no href) so we never navigate */}
                 <button
                     type="button"
                     onClick={() => setShowLogin(true)}
@@ -110,15 +110,14 @@ const HomePage: React.FC = () => {
                     Login
                 </button>
 
-                {/* was: <a href="/signup" ...> */}
                 <button
                     type="button"
                     onClick={() => setShowSignup(true)}
                     className="w-full text-center p-3 uppercase font-extrabold text-white 
-             bg-gradient-to-b from-purple-400 to-purple-800 
-             border-[3px] border-yellow-900 rounded-md 
-             shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),0_2px_4px_rgba(0,0,0,0.8)] 
-             transition-all duration-300 hover:from-green-400 hover:to-green-700"
+                     bg-gradient-to-b from-purple-400 to-purple-800 
+                     border-[3px] border-yellow-900 rounded-md 
+                     shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),0_2px_4px_rgba(0,0,0,0.8)] 
+                     transition-all duration-300 hover:from-green-400 hover:to-green-700"
                 >
                     Sign Up
                 </button>
@@ -137,7 +136,6 @@ const HomePage: React.FC = () => {
 
             <ConfirmationModal modal={modal} closeModal={closeModal} />
 
-            {/* Login pop-up (stays on Home) */}
             {showLogin && (
                 <LoginPage
                     asModal
@@ -146,12 +144,12 @@ const HomePage: React.FC = () => {
                     title="Sign in"
                 />
             )}
-            {/* SIGN UP modal (new) */}
+
             {showSignup && (
                 <SignupPage
                     asModal
                     open={showSignup}
-                    onClose={() => setShowSignup(false)} // ✕ and backdrop will call this
+                    onClose={() => setShowSignup(false)}
                     title="Create your account"
                 />
             )}

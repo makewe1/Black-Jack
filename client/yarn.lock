@@ -391,6 +391,11 @@
   resolved "https://registry.npmjs.org/@fontsource/great-vibes/-/great-vibes-5.2.8.tgz"
   integrity sha512-/PATz436NGixjNaigierUpv50wfNv2UhAAijcCPkn4ynvl41x66TCLbXVSVfp4pth9gjWnGqgoj0lVIhHapAuw==
 
+"@fontsource/montez@^5.2.8":
+  version "5.2.8"
+  resolved "https://registry.npmjs.org/@fontsource/montez/-/montez-5.2.8.tgz"
+  integrity sha512-orW9THWvscZA1RofIAff6RlMlE4eio2MtWfyZgcoJZ1nyzoTXRTYxVqmKy0wNZKB2s4XUMVxDfVADn8vQHsFIw==
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"

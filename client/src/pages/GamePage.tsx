@@ -4,6 +4,8 @@ import "../App.css";
 import HeaderBar from "../components/HeaderBar";
 import BottomBar from "../components/BottomBar";
 import GamePanel from "../components/GamePanel";
+import SideMenu from "../components/SideMenu";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Card = string;
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";
@@ -20,6 +22,31 @@ type ApiState = {
   deckLeft: number;
 };
 
+// -------------------- session persistence --------------------
+const SESSION_KEY = "bj:session";
+
+type Session = {
+  playerGold?: number;
+  dealerGold?: number;
+  deckLeft?: number;
+  gameId?: string | null;
+  status?: GameStatus;
+};
+
+function loadSession(): Session {
+  try {
+    return JSON.parse(localStorage.getItem(SESSION_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveSession(patch: Session) {
+  const prev: Session = loadSession();
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ ...prev, ...patch }));
+}
+// -------------------------------------------------------------
+
 export default function GamePage() {
   // ----- server state -----
   const [gameId, setGameId] = useState<string | null>(null);
@@ -33,10 +60,62 @@ export default function GamePage() {
   const [dealerGold, setDealerGold] = useState(2000);
   const [currentBet, setCurrentBet] = useState(0);
   const [deckLeft, setDeckLeft] = useState(52);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // ----- local UI (pre-deal) -----
   const [bet, setBet] = useState(0);
   const chips = [10, 50, 100, 500];
+
+  // router bits for "NEW GAME" reset (keep playerGold)
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Restore bankroll/deck/id on first mount so CONTINUE resumes properly
+  useEffect(() => {
+    const s = loadSession();
+    if (typeof s.playerGold === "number") setPlayerGold(s.playerGold);
+    if (typeof s.dealerGold === "number") setDealerGold(s.dealerGold);
+    if (typeof s.deckLeft === "number") setDeckLeft(s.deckLeft);
+    if (typeof s.gameId !== "undefined") setGameId(s.gameId ?? null);
+    if (typeof s.status !== "undefined") setStatus(s.status);
+  }, []);
+
+  // If /play?new=true → reset table, dealer, deck; keep playerGold
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("new") === "true") {
+      // read persisted bankroll to be 100% safe
+      const s = loadSession();
+
+      // reset round/table state
+      setGameId(null);
+      setStatus("idle");
+      setReveal(false);
+      setPlayerCards([]);
+      setDealerVisible([]);
+      setPlayerCount(0);
+      setDealerCount(undefined);
+      setCurrentBet(0);
+      setBet(0);
+
+      // reset dealer + deck ONLY
+      setDealerGold(2000);
+      setDeckLeft(52);
+
+      // keep bankroll; refresh saved non-table fields
+      saveSession({
+        playerGold:
+          typeof s.playerGold === "number" ? s.playerGold : playerGold,
+        dealerGold: 2000,
+        deckLeft: 52,
+        gameId: null,
+        status: "idle",
+      });
+
+      // clean URL so it doesn't keep re-triggering
+      navigate("/play", { replace: true });
+    }
+  }, [location.search, navigate, playerGold]);
 
   // table cap: both must afford the bet
   const tableMax = Math.min(playerGold, dealerGold);
@@ -56,6 +135,8 @@ export default function GamePage() {
         setCurrentBet(0);
         setBet(0);
         setStatus("idle");
+        // persist status so CONTINUE shows correct pre-deal state
+        saveSession({ status: "idle" });
       }, 2000);
       return () => clearTimeout(t);
     }
@@ -73,6 +154,15 @@ export default function GamePage() {
     setDealerGold(r.dealerGold);
     setCurrentBet(r.currentBet ?? 0);
     setDeckLeft(r.deckLeft ?? deckLeft);
+
+    // persist bankroll + deck + id for "CONTINUE"
+    saveSession({
+      playerGold: r.playerGold,
+      dealerGold: r.dealerGold,
+      deckLeft: r.deckLeft ?? deckLeft,
+      gameId: r.id,
+      status: r.status,
+    });
 
     // Only clear bet when a new round starts
     if (r.status === "playing") setBet(0);
@@ -139,16 +229,30 @@ export default function GamePage() {
       return;
     }
     const r: ApiState = await resp.json();
+
     // only touch wallet + deck counter
     setPlayerGold(r.playerGold);
     setDeckLeft(r.deckLeft ?? deckLeft);
-    // do NOT call apply(r) here
+
+    // persist wallet + deck so CONTINUE doesn't reset
+    saveSession({
+      playerGold: r.playerGold,
+      deckLeft: r.deckLeft ?? deckLeft,
+    });
+
+    // do NOT call apply(r) here; we don't want to alter table state
   }
 
   // ----- UI -----
   return (
     <div className="game-page">
-      <HeaderBar playerGold={playerGold} onBuy={buy} />
+      <HeaderBar
+        playerGold={playerGold}
+        onBuy={buy}
+        onMenuClick={() => setMenuOpen(true)}
+      />
+
+      <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <h1 className="game-title">Black Jack</h1>
 
@@ -167,7 +271,7 @@ export default function GamePage() {
       <BottomBar
         status={status}
         chips={chips}
-        tableMax={tableMax}
+        tableMax={Math.min(playerGold, dealerGold)}
         bet={bet}
         currentBet={currentBet}
         isPlaying={isPlaying}

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montez&display=swap');
 /* ---------------------------
    Global resets & root
 ---------------------------- */
@@ -91,6 +92,17 @@ h2 {
   border: 2px solid var(--panel-border);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5),
     inset 0 0 16px rgba(255, 255, 255, 0.06);
+}
+
+
+
+.blackjack-style {
+  font-family: 'Montez', cursive;
+  color: #FFAB23;
+  text-shadow: 
+    0 0 5px rgba(255, 171, 35, 0.5),
+    0 0 10px rgba(255, 171, 35, 0.3),
+    3px 3px 5px rgba(0, 0, 0, 0.7);
 }
 
 /* ---------------------------
