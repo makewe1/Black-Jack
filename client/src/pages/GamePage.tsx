@@ -90,7 +90,7 @@ export default function GamePage() {
             const s = loadSession();
 
             // reset round/table state
-            setGameId(null);
+            // setGameId(null);
             setStatus("idle");
             setReveal(false);
             setPlayerCards([]);
@@ -106,13 +106,13 @@ export default function GamePage() {
 
             // keep bankroll; refresh saved non-table fields
             saveSession({
-                playerGold:
-                    typeof s.playerGold === "number"
-                        ? s.playerGold
-                        : playerGold,
+                // playerGold:
+                //     typeof s.playerGold === "number"
+                //         ? s.playerGold
+                //         : playerGold,
                 dealerGold: 2000,
                 deckLeft: 52,
-                gameId: null,
+                // gameId: null,
                 status: "idle",
             });
 
