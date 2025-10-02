@@ -1,37 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Montez&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montez&display=swap");
 /* ---------------------------
    Global resets & root
 ---------------------------- */
 html,
 body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 #root {
-  width: 100%;
-  height: 100%;
-  max-width: none;
+    width: 100%;
+    height: 100%;
+    max-width: none;
 }
 
 /* ---------------------------
    Theme variables
 ---------------------------- */
 :root {
-  --panel-border: #4a3f6d;
-  --purple-edge: #3d335c;
-  --purple-1: #4e3a82;
-  --purple-2: #392b69;
-  --felt-1: #2e7d32;
-  --felt-2: #1b5e20;
-  --gold: #ffd700;
-  --deal-1: #388e3c;
-  --deal-2: #1b5e20;
+    --panel-border: #4a3f6d;
+    --purple-edge: #3d335c;
+    --purple-1: #4e3a82;
+    --purple-2: #392b69;
+    --felt-1: #2e7d32;
+    --felt-2: #1b5e20;
+    --gold: #ffd700;
+    --deal-1: #388e3c;
+    --deal-2: #1b5e20;
 }
 
 /* ---------------------------
@@ -39,15 +39,15 @@ body {
 ---------------------------- */
 h1,
 h2 {
-  margin: 0.5rem 0;
-  text-align: center;
-  color: #f5f3ff;
+    margin: 0.5rem 0;
+    text-align: center;
+    color: #f5f3ff;
 }
 
 .deck-counter {
-  font-size: 1.2rem;
-  text-align: center;
-  color: #ffeaa7;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #ffeaa7;
 }
 
 /* ---------------------------
@@ -55,77 +55,72 @@ h2 {
 ---------------------------- */
 /* Fancy title to match the menu art */
 .game-title {
-  /* if you already loaded a calligraphy/script font, use it here */
-  font-family: var(--title-font, "font-calligraphy", cursive);
-  font-weight: 700;
-  font-size: clamp(28px, 4vw, 48px);
-  line-height: 1.1;
-  text-align: center;
+    /* if you already loaded a calligraphy/script font, use it here */
+    font-family: var(--title-font, "font-calligraphy", cursive);
+    font-weight: 700;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.1;
+    text-align: center;
 
-  /* gold-ish look + soft glow */
-  background: linear-gradient(180deg, #ffd46a, #ffb52e 60%, #e08c1c);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+    /* gold-ish look + soft glow */
+    background: linear-gradient(180deg, #ffd46a, #ffb52e 60%, #e08c1c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 
-  text-shadow:
-    0 1px 0 rgba(0,0,0,0.25),
-    0 6px 18px rgba(255, 196, 74, 0.45);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25),
+        0 6px 18px rgba(255, 196, 74, 0.45);
 
-  letter-spacing: 1px;
-  margin: 12px 0 6px;
+    letter-spacing: 1px;
+    margin: 12px 0 6px;
 }
 
 /* optional: keep the sub-counter toned down below the title */
 .deck-counter {
-  color: #e7d6ff;
-  opacity: 0.9;
+    color: #e7d6ff;
+    opacity: 0.9;
 }
 
 .game-page {
-  width: 100vw;        /* fill full viewport width */
-  height: 100vh;       /* fill full viewport height */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* or center if you want vertical centering */
-  background: linear-gradient(180deg, #3d2f63, #2b2453 60%, #261f4c);
-  box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.06);
+    width: 100vw; /* fill full viewport width */
+    height: 100vh; /* fill full viewport height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* or center if you want vertical centering */
+    background: linear-gradient(180deg, #3d2f63, #2b2453 60%, #261f4c);
+    box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.06);
 
-  /* remove panel styling so it looks full screen */
-  padding: 0;
-  border-radius: 0;
-  border: none;
+    /* remove panel styling so it looks full screen */
+    padding: 0;
+    border-radius: 0;
+    border: none;
 }
 
-
-
 .blackjack-style {
-  font-family: 'Montez', cursive;
-  color: #FFAB23;
-  text-shadow: 
-    0 0 5px rgba(255, 171, 35, 0.5),
-    0 0 10px rgba(255, 171, 35, 0.3),
-    3px 3px 5px rgba(0, 0, 0, 0.7);
+    font-family: "Montez", cursive;
+    color: #ffab23;
+    text-shadow: 0 0 5px rgba(255, 171, 35, 0.5),
+        0 0 10px rgba(255, 171, 35, 0.3), 3px 3px 5px rgba(0, 0, 0, 0.7);
 }
 
 /* ---------------------------
    Responsive tweaks
 ---------------------------- */
 @media (max-width: 720px) {
-  h1 {
-    font-size: 1.6rem;
-  }
-  h2 {
-    font-size: 1.2rem;
-  }
+    h1 {
+        font-size: 1.6rem;
+    }
+    h2 {
+        font-size: 1.2rem;
+    }
 }
 
 @media (max-width: 520px) {
-  h1 {
-    font-size: 1.4rem;
-  }
-  h2 {
-    font-size: 1.1rem;
-  }
+    h1 {
+        font-size: 1.4rem;
+    }
+    h2 {
+        font-size: 1.1rem;
+    }
 }
