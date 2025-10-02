@@ -94,7 +94,7 @@ export default function SignupPage({
             return;
         }
         localStorage.setItem("token", j.token);
-        navigate("/play", { replace: true });
+        navigate("/start", { replace: true });
     }
 
     const Form = (

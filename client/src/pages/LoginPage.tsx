@@ -67,7 +67,7 @@ export default function LoginPage({
         const j = await r.json();
         if (!r.ok) return setMsg(j.error || "Login failed.");
         localStorage.setItem("token", j.token);
-        navigate("/play", { replace: true });
+        navigate("/start", { replace: true });
     }
 
     async function requestCode() {
@@ -91,7 +91,7 @@ export default function LoginPage({
         const j = await r.json();
         if (!r.ok) return setMsg(j.error || "Login failed.");
         localStorage.setItem("token", j.token);
-        navigate("/play", { replace: true });
+        navigate("/start", { replace: true });
     }
 
     // ----- Core form UI (unchanged) -----

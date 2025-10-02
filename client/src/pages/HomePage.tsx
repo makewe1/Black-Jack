@@ -71,8 +71,8 @@ const HomePage: React.FC = () => {
         });
         setTimeout(() => {
             closeModal();
-            window.location.href = "/play";
-        }, 1500);
+            window.location.href = "/start";
+        }, 900);
     };
 
     const closeModal = () => {
