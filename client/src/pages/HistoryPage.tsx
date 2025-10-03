@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/HistoryPage.css";
 
 type HistoryEntry = {
     id: string;
-    status: string;
+    status: "won" | "lost" | "tie" | string;
     playerCards: string[];
     dealerVisible: string[];
     playerCount: number;
@@ -18,54 +19,85 @@ export default function HistoryPage() {
 
     useEffect(() => {
         const h = JSON.parse(localStorage.getItem("bj:history") || "[]");
-        setHistory(h);
+        // newest first
+        setHistory(h.reverse());
     }, []);
 
+    const total = useMemo(() => history.length, [history]);
+
     return (
-        <div className="min-h-screen bg-black text-white p-6">
-            <h1 className="text-3xl mb-6">Game History</h1>
-            {history.length === 0 ? (
-                <p>No games played yet.</p>
-            ) : (
-                <ul className="space-y-4">
-                    {history.map((h, i) => (
-                        <li
-                            key={i}
-                            className="border p-4 rounded-lg bg-gray-800"
+        <div
+            className="history-bg"
+            style={{ backgroundImage: "url('/bg-start.png')" }} // reuse start bg
+        >
+            <div className="history-container">
+                <div className="history-header">
+                    <h1 className="blackjack-style history-title">
+                        Game History
+                    </h1>
+
+                    <div className="history-actions">
+                        <button
+                            className="game-button"
+                            onClick={() => nav("/play")}
                         >
-                            <div>
-                                <strong>Round:</strong> {i + 1}
-                            </div>
-                            <div>
-                                <strong>Result:</strong>{" "}
-                                {h.status.toUpperCase()}
-                            </div>
-                            <div>
-                                <strong>Bet:</strong> {h.bet}
-                            </div>
-                            <div>
-                                <strong>Player:</strong>{" "}
-                                {h.playerCards.join(", ")} ({h.playerCount})
-                            </div>
-                            <div>
-                                <strong>Dealer:</strong>{" "}
-                                {h.dealerVisible.join(", ")} (
-                                {h.dealerCount ?? "?"})
-                            </div>
-                            <div>
-                                <strong>Time:</strong>{" "}
-                                {new Date(h.resultTime).toLocaleString()}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            )}
-            <button
-                className="mt-6 px-4 py-2 bg-blue-600 rounded"
-                onClick={() => nav("/start")}
-            >
-                Back
-            </button>
+                            BACK TO GAME
+                        </button>
+                        <button
+                            className="game-button"
+                            onClick={() => nav("/start")}
+                        >
+                            START MENU
+                        </button>
+                    </div>
+                </div>
+
+                <p className="history-subtitle">
+                    Showing {total} {total === 1 ? "game" : "games"}
+                </p>
+
+                {history.length === 0 ? (
+                    <div className="history-empty">No games played yet.</div>
+                ) : (
+                    <ul className="history-list">
+                        {history.map((h, i) => (
+                            <li key={i} className="history-item">
+                                <div className="cell">
+                                    <span className="label">Date</span>
+                                    <span className="value">
+                                        {new Date(
+                                            h.resultTime,
+                                        ).toLocaleString()}
+                                    </span>
+                                </div>
+
+                                <div className="cell">
+                                    <span className="label">Bet</span>
+                                    <span className="value">{h.bet} chips</span>
+                                </div>
+
+                                <div className="cell">
+                                    <span className="label">Score</span>
+                                    <span className="value">
+                                        You: {h.playerCount} | Dealer:{" "}
+                                        {h.dealerCount ?? "?"}
+                                    </span>
+                                </div>
+
+                                <div className="cell result">
+                                    <span className={`badge ${h.status}`}>
+                                        {h.status === "won"
+                                            ? "Win"
+                                            : h.status === "lost"
+                                            ? "Lose"
+                                            : "Push"}
+                                    </span>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 }

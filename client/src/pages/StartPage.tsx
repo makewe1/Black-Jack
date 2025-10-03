@@ -69,7 +69,7 @@ export default function StartPage() {
     const onNewGame = () => {
         const s = getSession();
         if (s) {
-            // ✅ Reset ONLY the dealer's bankroll; keep player's as-is.
+            //  Reset ONLY the dealer's bankroll; keep player's as-is.
             const now = new Date().toISOString();
             saveSession({
                 ...s,
