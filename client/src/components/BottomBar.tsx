@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./BottomBar.css";
 
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";
@@ -47,20 +47,36 @@ export default function BottomBar({
     const showingBet = !isPlaying;
     const effectiveBet = Math.min(bet, tableMax);
 
-    const [aiTip, setAiTip] = useState<string | null>(null);
+    // 'hit' | 'stand' | null — which action to highlight
+    const [aiRec, setAiRec] = useState<"hit" | "stand" | null>(null);
 
     async function onAskAI() {
         if (!isPlaying || !gameId) return;
         try {
-            const resp = await fetch(`/api/games/${gameId}/ai`, {
-                method: "POST",
-            });
+            const resp = await fetch(`/api/games/${gameId}/ai`, { method: "POST" });
             const data = await resp.json();
-            setAiTip(data.recommendation || "No suggestion");
+            const r = String(data?.recommendation ?? "").toUpperCase();
+            if (r.includes("HIT")) setAiRec("hit");
+            else if (r.includes("STAND")) setAiRec("stand");
+            else setAiRec(null);
         } catch {
-            setAiTip("AI unavailable");
+            setAiRec(null);
         }
     }
+
+    // Clear highlight when the round ends (won/lost/tie) or goes back to idle
+    useEffect(() => {
+        if (status !== "playing") setAiRec(null);
+    }, [status]);
+
+    const handleHit = () => {
+        setAiRec(null); // optional: clear once player acts
+        onHit();
+    };
+    const handleStay = () => {
+        setAiRec(null); // optional: clear once player acts
+        onStay();
+    };
 
     return (
         <div className="bottombar">
@@ -90,11 +106,7 @@ export default function BottomBar({
                                 {c}
                             </button>
                         ))}
-                        <button
-                            onClick={onClearBet}
-                            disabled={false}
-                            type="button"
-                        >
+                        <button onClick={onClearBet} type="button">
                             Clear
                         </button>
                         <button
@@ -109,26 +121,34 @@ export default function BottomBar({
                 </div>
             ) : (
                 <div className="actionbar">
-                    {/* AI Button with tooltip */}
+                    {/* AI Button */}
                     <div className="ai-helper">
                         <button
-                            className="ai-btn"
+                            className={`ai-btn ${aiRec ? "ai-active" : ""}`}
                             onClick={onAskAI}
                             type="button"
                             title="AI Recommendation"
+                            aria-label="AI Recommendation"
                         >
                             ?
                         </button>
-                        {aiTip && <div className="ai-tooltip">{aiTip}</div>}
                     </div>
 
                     <button className="double" disabled type="button">
                         DOUBLE
                     </button>
-                    <button onClick={onHit} type="button">
+                    <button
+                        className={aiRec === "hit" ? "action-suggest" : ""}
+                        onClick={handleHit}
+                        type="button"
+                    >
                         HIT
                     </button>
-                    <button onClick={onStay} type="button">
+                    <button
+                        className={aiRec === "stand" ? "action-suggest" : ""}
+                        onClick={handleStay}
+                        type="button"
+                    >
                         STAND
                     </button>
                     <div className="locked-bet">
