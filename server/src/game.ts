@@ -181,7 +181,14 @@ export function hit(g: Game): PublicGame {
 export function stay(g: Game): PublicGame {
     if (g.status !== "playing") throw new Error("Game over");
     g.reveal = true;
-    const fullDealer = () => g.dealer.visible.concat(g.dealer.hidden);
+
+    // Flip hole card(s) so the client actually receives the full dealer hand
+    if (g.dealer.hidden.length) {
+        g.dealer.visible.push(...g.dealer.hidden);
+        g.dealer.hidden = [];
+    }
+
+    const fullDealer = () => g.dealer.visible; // now visible IS the full hand
     while (dealerShouldHit(fullDealer()))
         g.dealer.visible.push(drawOne(g.deck));
 

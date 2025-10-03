@@ -325,6 +325,7 @@ export default function GamePage() {
                 dealerGold={dealerGold}
                 displayPlayerGold={displayPlayerGold}
                 displayDealerGold={displayDealerGold}
+                gameId={gameId} 
             />
         </div>
     );
