@@ -19,11 +19,16 @@
 
 /* Header row */
 .history-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 40px; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.history-footer {
+    margin-top: auto; /* NEW: pushes the pager to the bottom */
+    padding-top: 20px; /* NEW */
 }
 
 .history-title {
@@ -192,39 +197,58 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin-top: 24px;
+    gap: 8px; /* a touch wider than before */
+    margin-top: 0; /* moved spacing to footer */
 }
 
-.pagination button,
-.pagination span {
-    min-width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    background: #111;
-    color: #fff;
+/* Buttons: dark rounded squares with subtle border & glow */
+.pagination button {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 10px; /* more rounded like your screenshot */
+    border: 1px solid #2a2a2f;
+    background: #0f1014;
+    color: #e8e8e8;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.15s ease, background 0.2s ease,
+        border-color 0.2s ease;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+        0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .pagination button:hover:not(:disabled) {
-    background: #22c55e; /* green on hover */
-    border-color: #16a34a;
+    background: #181a22;
+    border-color: #3a3d46;
+    transform: translateY(-1px);
 }
 
 .pagination button:disabled {
-    opacity: 0.4;
+    opacity: 0.45;
     cursor: not-allowed;
 }
 
+/* Active page = white chip, black text */
 .pagination .active {
-    background: #fff; /* active page = white */
-    color: #000;
+    background: #ffffff;
+    color: #111;
+    border-color: #ffffff;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06) inset,
+        0 6px 16px rgba(255, 255, 255, 0.15);
 }
 
+/* Ellipsis should be plain text, not button-styled */
+.pagination .dots {
+    min-width: auto; /* don’t force a square */
+    height: auto;
+    border: none;
+    background: transparent;
+    color: #8e93a6;
+    padding: 0 4px;
+    font-weight: 600;
+}
 .page-info {
     margin-top: 12px;
     text-align: center;
