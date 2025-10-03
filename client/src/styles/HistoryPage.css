@@ -88,7 +88,20 @@
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 14px;
+    gap: var(--row-gap);
+
+    /* key bits */
+    grid-auto-rows: var(--row-height); /* every row = fixed height */
+    align-content: start; /* DO NOT stretch rows to fill extra space */
+
+    min-height: calc(
+        var(--history-rows) * var(--row-height) + (var(--history-rows) - 1) *
+            var(--row-gap)
+    );
+    max-height: calc(
+        var(--history-rows) * var(--row-height) + (var(--history-rows) - 1) *
+            var(--row-gap)
+    );
 }
 
 /* Each row styled like chunky dark capsules */
@@ -97,6 +110,8 @@
     grid-template-columns: 1.6fr 1fr 1.4fr 0.8fr;
     gap: 12px;
     align-items: center;
+    box-sizing: border-box;
+    height: 100%; /* fill the grid track height (var(--row-height)) */
 
     padding: 18px 20px;
     border-radius: 18px;
@@ -170,4 +185,54 @@
         flex-wrap: wrap;
         justify-content: center;
     }
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+}
+
+.pagination button,
+.pagination span {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+    background: #22c55e; /* green on hover */
+    border-color: #16a34a;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination .active {
+    background: #fff; /* active page = white */
+    color: #000;
+}
+
+.page-info {
+    margin-top: 12px;
+    text-align: center;
+    color: #bbb;
+    font-size: 14px;
+}
+
+:root {
+    --history-rows: 5; /* how many rows you want visible space for */
+    --row-height: 110px; /* fixed height per row (tweak to your taste) */
+    --row-gap: 14px; /* same as .history-list gap */
 }

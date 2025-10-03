@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montez&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
 /* ---------------------------
    Global resets & root
 ---------------------------- */
@@ -55,26 +57,14 @@ h2 {
 ---------------------------- */
 /* Fancy title to match the menu art */
 .game-title {
-    /* if you already loaded a calligraphy/script font, use it here */
-    font-family: var(--title-font, "font-calligraphy", cursive);
-    font-weight: 700;
-    font-size: clamp(28px, 4vw, 48px);
-    line-height: 1.1;
-    text-align: center;
-
-    /* gold-ish look + soft glow */
-    background: linear-gradient(180deg, #ffd46a, #ffb52e 60%, #e08c1c);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25),
-        0 6px 18px rgba(255, 196, 74, 0.45);
-
-    letter-spacing: 1px;
-    margin: 12px 0 6px;
+  font-family: "Dancing Script", cursive;
+  font-size: clamp(38px, 4vw, 56px);
+  line-height: 1.1;
+  color: #ffde89;
+  text-shadow: 0 0 12px rgba(255, 200, 80, 0.5);
+  margin: 20px 0 0;;
+  font-weight: 700;
 }
-
 /* optional: keep the sub-counter toned down below the title */
 .deck-counter {
     color: #e7d6ff;

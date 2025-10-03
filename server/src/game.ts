@@ -17,24 +17,37 @@ export type Game = {
 };
 export type PublicGame = {
     id: string;
-    player: { cards: Card[] };
-    dealer: { visible: Card[]; hidden: number };
+    player: { cards: Card[]; count: number };
+    dealer: { visible: Card[]; hidden: number; count?: number };
     reveal: boolean;
     status: GameStatus;
     playerGold: number;
     dealerGold: number;
     currentBet: number;
+    deckLeft: number;
 };
-const toPublic = (g: Game): PublicGame => ({
-    id: g.id,
-    player: { cards: g.player.cards },
-    dealer: { visible: g.dealer.visible, hidden: g.dealer.hidden.length },
-    reveal: g.reveal,
-    status: g.status,
-    playerGold: g.playerGold,
-    dealerGold: g.dealerGold,
-    currentBet: g.currentBet,
-});
+const toPublic = (g: Game): PublicGame => {
+    const playerCount = score(g.player.cards);
+    const dealerVisibleCount = score(g.dealer.visible);
+    const fullDealer = g.dealer.visible.concat(g.dealer.hidden);
+
+    return {
+        id: g.id,
+        player: { cards: g.player.cards, count: playerCount },
+        // show dealer’s visible total while playing; full total once revealed
+        dealer: {
+            visible: g.dealer.visible,
+            hidden: g.dealer.hidden.length,
+            count: g.reveal ? score(fullDealer) : dealerVisibleCount,
+        },
+        reveal: g.reveal,
+        status: g.status,
+        playerGold: g.playerGold,
+        dealerGold: g.dealerGold,
+        currentBet: g.currentBet,
+        deckLeft: g.deck.length,
+    };
+};
 
 /* ---------- In-memory store (swappable later) ---------- */
 const games = new Map<string, Game>();
