@@ -196,7 +196,13 @@ export default function GamePage() {
         const resp = await fetch("/api/games/start", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: gameId ?? undefined, bet: amount }),
+            body: JSON.stringify({
+                id: gameId ?? undefined,
+                bet: amount,
+                // key bits:
+                seed: { playerGold, dealerGold }, // used when the game is first created
+                forceDealerGold: dealerGold, // reset ONLY dealer each new round
+            }),
         });
         if (!resp.ok) {
             const err = await resp.json().catch(() => ({}));
@@ -226,10 +232,13 @@ export default function GamePage() {
     }
 
     async function buy(amount: number) {
-        const resp = await fetch("/api/wallet/buy", {
+       // Optional: disallow buying mid-round (server also enforces this)
+        if (status === "playing") return;
+        const pathId = gameId ?? "new"; // placeholder; server will create a new game id if needed
+        const resp = await fetch(`/api/games/${pathId}/buy`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: gameId ?? undefined, amount }),
+             body: JSON.stringify({ amount }),
         });
         if (!resp.ok) {
             const e = await resp.json().catch(() => ({}));
@@ -241,11 +250,14 @@ export default function GamePage() {
         // only touch wallet + deck counter
         setPlayerGold(r.playerGold);
         setDeckLeft(r.deckLeft ?? deckLeft);
+         // capture/remember the server's game id for future actions
+        if (r.id) setGameId(r.id);
 
         // persist wallet + deck so CONTINUE doesn't reset
         saveSession({
             playerGold: r.playerGold,
             deckLeft: r.deckLeft ?? deckLeft,
+            gameId: r.id ?? gameId,
         });
 
         // do NOT call apply(r) here; we don't want to alter table state
