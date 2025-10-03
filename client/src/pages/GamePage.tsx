@@ -146,6 +146,27 @@ export default function GamePage() {
         }
     }, [status]);
 
+    // save game history on round end
+    useEffect(() => {
+        if (status === "won" || status === "lost" || status === "tie") {
+            const history = JSON.parse(
+                localStorage.getItem("bj:history") || "[]",
+            );
+            const newEntry = {
+                id: gameId,
+                status,
+                playerCards,
+                dealerVisible,
+                playerCount,
+                dealerCount,
+                bet: currentBet,
+                resultTime: new Date().toISOString(),
+            };
+            history.push(newEntry);
+            localStorage.setItem("bj:history", JSON.stringify(history));
+        }
+    }, [status]);
+
     function apply(r: ApiState) {
         setGameId(r.id);
         setStatus(r.status);
@@ -232,13 +253,13 @@ export default function GamePage() {
     }
 
     async function buy(amount: number) {
-       // Optional: disallow buying mid-round (server also enforces this)
+        // Optional: disallow buying mid-round (server also enforces this)
         if (status === "playing") return;
         const pathId = gameId ?? "new"; // placeholder; server will create a new game id if needed
         const resp = await fetch(`/api/games/${pathId}/buy`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-             body: JSON.stringify({ amount }),
+            body: JSON.stringify({ amount }),
         });
         if (!resp.ok) {
             const e = await resp.json().catch(() => ({}));
@@ -250,7 +271,7 @@ export default function GamePage() {
         // only touch wallet + deck counter
         setPlayerGold(r.playerGold);
         setDeckLeft(r.deckLeft ?? deckLeft);
-         // capture/remember the server's game id for future actions
+        // capture/remember the server's game id for future actions
         if (r.id) setGameId(r.id);
 
         // persist wallet + deck so CONTINUE doesn't reset

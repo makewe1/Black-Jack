@@ -51,8 +51,7 @@ export default function SideMenu({ open, onClose }: Props) {
                         <button
                             className="sidemenu-btn"
                             onClick={() => {
-                                // TODO: implement history route when ready
-                                alert("History not implemented yet");
+                                nav("/history");
                                 onClose();
                             }}
                         >
