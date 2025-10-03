@@ -28,6 +28,7 @@ function saveSession(s: GuestSession) {
 
 export default function StartPage() {
     const nav = useNavigate();
+    const isLoggedIn = Boolean(localStorage.getItem("token"));
 
     // Ensure we have a lightweight guest session if user lands here directly
     useEffect(() => {
@@ -88,13 +89,18 @@ export default function StartPage() {
         nav("/");
     };
 
+    const onLogout = () => {
+        localStorage.removeItem("token");
+        nav("/");
+    };
+
     return (
         <div
             className="min-h-screen w-full flex items-center justify-center bg-cover bg-center text-white p-6"
             style={{ backgroundImage: "url('/bg-start.png')" }}
         >
             {/* Left: Icon */}
-            <div className="flex flex-col items-center justify-center mr-32">
+            <div className="flex flex-col items-center justify-center mr-48">
                 <img
                     src="/bg-coin.png"
                     alt="Blackjack Coin Icon"
@@ -128,8 +134,11 @@ export default function StartPage() {
                 </div>
 
                 <div className="relative game-button-container">
-                    <button className="game-button" onClick={onExit}>
-                        EXIT
+                    <button
+                        className="game-button"
+                        onClick={isLoggedIn ? onLogout : onExit}
+                    >
+                        {isLoggedIn ? "LOGOUT" : "EXIT"}
                     </button>
                 </div>
             </div>
