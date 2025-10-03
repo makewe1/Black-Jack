@@ -1,0 +1,181 @@
+/* Page layout */
+.login-page {
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  background: #0f0e14;
+  color: #fff;
+  padding: 24px;
+}
+.page-inner {
+  width: 92vw;
+  max-width: 600px;
+}
+
+/* Title */
+.login-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(34px, 4vw, 40px);
+  line-height: 1.1;
+  margin: 0 0 16px;
+  color: #ffd700;
+  text-shadow: 0 2px 4px rgba(0,0,0,.6);
+}
+
+/* Segmented control */
+.segment {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 16px;
+  background: #2a2731;
+  border: 1px solid #3b3645;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  margin: 0 auto 16px;
+}
+.segment-btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d1d5db;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color .2s, background .2s, box-shadow .2s;
+}
+.segment-btn:hover { color: #fff; }
+.segment-btn.is-active {
+  color: #fff;
+  background: linear-gradient(to bottom, #c084fc, #6b21a8);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.5);
+}
+
+/* Card */
+.login-card {
+  margin: 0 auto;
+  max-width: 520px;
+  border-radius: 16px;
+  border: 1px solid #3b3645;
+  background: #1b1921;
+  padding: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 10px 30px rgba(0,0,0,.6);
+}
+
+/* Typography & spacing */
+.label {
+  display: block;
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-bottom: 6px;
+}
+.mt { margin-top: 16px; }
+.row { display: flex; align-items: center; gap: 8px; }
+.hint { font-size: 12px; color: #9ca3af; }
+
+/* Inputs */
+.input {
+  width: 100%;
+  border-radius: 12px;
+  background: #24222b;
+  border: 1px solid #3b3645;
+  padding: 12px 14px;
+  color: #fff;
+  outline: none;
+  transition: box-shadow .2s, border-color .2s;
+}
+.input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139,92,246,.35);
+}
+.input.code { letter-spacing: .4em; }
+
+/* Buttons */
+.btn-primary {
+  border-radius: 12px;
+  border: 3px solid #5a4300;
+  background: linear-gradient(to bottom, #c084fc, #6b21a8);
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,.6),
+    0 6px 14px rgba(0,0,0,.6);
+  cursor: pointer;
+  transition: filter .2s, transform .05s, background .2s, opacity .2s;
+}
+.btn-primary:hover:enabled {
+  background: linear-gradient(to bottom, #34d399, #065f46);
+}
+.btn-primary:active:enabled { transform: translateY(1px); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+.full { width: 100%; }
+
+.btn-secondary {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #2f2b38;
+  color: #e5e7eb;
+  border: 1px solid #3b3645;
+  cursor: pointer;
+  transition: background .2s, color .2s, opacity .2s;
+}
+.btn-secondary:hover { background: #363146; color: #fff; }
+.btn-secondary:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Message */
+.msg {
+  border-radius: 10px;
+  background: #2a2731;
+  color: #e9d5ff;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #3b3645;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px);
+}
+.modal {
+  position: relative;
+  width: 92vw;
+  max-width: 600px;
+  border-radius: 16px;
+  background: rgba(30,30,37,.95);
+  color: #fff;
+  padding: 32px;
+  border: 1px solid #3b3645;
+  box-shadow: 0 20px 60px rgba(0,0,0,.7);
+  backdrop-filter: blur(8px);
+}
+.modal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  height: 36px;
+  width: 36px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,.08);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+.modal-close:hover { background: rgba(255,255,255,.16); }
+
+/* Tiny entrance animation */
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes scaleIn { from { transform: scale(.98) } to { transform: scale(1) } }
+.animate-pop { animation: fadeIn 120ms ease-out, scaleIn 120ms ease-out; }
