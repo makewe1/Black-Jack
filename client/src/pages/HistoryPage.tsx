@@ -84,11 +84,11 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        <p className="history-subtitle">
+        {/* <p className="history-subtitle">
           {total === 0
             ? "Showing 0 games"
             : `Showing ${start}–${end} of ${total} games`}
-        </p>
+        </p> */}
 
         {total === 0 ? (
           <div className="history-empty">No games played yet.</div>

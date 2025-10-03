@@ -19,10 +19,11 @@
 
 /* Header row */
 .history-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 40px; 
 }
 
 .history-title {
