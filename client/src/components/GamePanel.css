@@ -7,7 +7,6 @@
   border-radius: 32px;
   background: radial-gradient(circle at center, #2e7d32 0%, #1b5e20 80%);
   border: 20px solid transparent;
-  border-image: url("/assets/wood-frame.png") 40 round;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
   position: relative;
 
