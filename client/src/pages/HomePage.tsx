@@ -1,5 +1,6 @@
 // src/pages/HomePage.tsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import GoldCoinLogo from "../components/GoldCoinLogo";
 import "@fontsource/alex-brush"; // you can remove if unused
 import LoginPage from "./LoginPage";
@@ -47,6 +48,7 @@ const ConfirmationModal: React.FC<{
 };
 
 const HomePage: React.FC = () => {
+    const navigate = useNavigate();
     const [modal, setModal] = useState<ModalState>({
         isVisible: false,
         title: "",
@@ -70,11 +72,12 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         const prev = document.body.style.overflow;
-        document.body.style.overflow = showLogin ? "hidden" : prev || "";
+        const anyModalOpen = showLogin || showSignup;
+        document.body.style.overflow = anyModalOpen ? "hidden" : prev || "";
         return () => {
             document.body.style.overflow = prev || "";
         };
-    }, [showLogin]);
+    }, [showLogin, showSignup]);
 
     const closeModal = () => {
         setModal((prev) => ({ ...prev, isVisible: false }));
@@ -108,7 +111,7 @@ const HomePage: React.FC = () => {
 
         setTimeout(() => {
             closeModal();
-            window.location.href = "/start"; // or navigate('/start')
+            navigate("/start");
         }, 800);
     };
 

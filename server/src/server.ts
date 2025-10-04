@@ -35,7 +35,13 @@ const API_KEY = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI(API_KEY ? { apiKey: API_KEY } : {});
 
 const app = express();
-app.use(cors());
+app.set("trust proxy", 1);
+app.use(
+  cors({
+    origin: (process.env.CORS_ORIGIN ?? "*").split(","),
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/api/auth", authRouter);
 
