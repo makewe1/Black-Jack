@@ -6,7 +6,7 @@ import BottomBar from "../components/BottomBar";
 import GamePanel from "../components/GamePanel";
 import SideMenu from "../components/SideMenu";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { apiFetch } from "../lib/api";
 type Card = string;
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";
 
@@ -211,7 +211,7 @@ export default function GamePage() {
         const amount = effectiveBet;
         if (amount === 0) return;
 
-        const resp = await fetch("/api/games/start", {
+        const resp = await apiFetch("/api/games/start", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -233,7 +233,7 @@ export default function GamePage() {
 
     async function onHit() {
         if (!gameId || !isPlaying) return;
-        const resp = await fetch(`/api/games/${gameId}/hit`, {
+        const resp = await apiFetch(`/api/games/${gameId}/hit`, {
             method: "POST",
         });
         const r: ApiState = await resp.json();
@@ -242,7 +242,7 @@ export default function GamePage() {
 
     async function onStay() {
         if (!gameId || !isPlaying) return;
-        const resp = await fetch(`/api/games/${gameId}/stay`, {
+        const resp = await apiFetch(`/api/games/${gameId}/stay`, {
             method: "POST",
         });
         const r: ApiState = await resp.json();
@@ -253,7 +253,7 @@ export default function GamePage() {
         // Optional: disallow buying mid-round (server also enforces this)
         if (status === "playing") return;
         const pathId = gameId ?? "new"; // placeholder; server will create a new game id if needed
-        const resp = await fetch(`/api/games/${pathId}/buy`, {
+        const resp = await apiFetch(`/api/games/${pathId}/buy`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ amount }),
