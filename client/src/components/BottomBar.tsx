@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./BottomBar.css";
 
 type GameStatus = "idle" | "playing" | "won" | "lost" | "tie";

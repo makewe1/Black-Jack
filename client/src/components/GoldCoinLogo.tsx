@@ -1,5 +1,5 @@
 // GoldCoinLogo.tsx
-import React, { useRef, Suspense, useMemo } from "react";
+import { useRef, Suspense, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import type { Mesh, Texture, Group } from "three";              

@@ -86,9 +86,6 @@ export default function GamePage() {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         if (params.get("new") === "true") {
-            // read persisted bankroll to be 100% safe
-            const s = loadSession();
-
             // reset round/table state
             // setGameId(null);
             setStatus("idle");
@@ -325,7 +322,7 @@ export default function GamePage() {
                 dealerGold={dealerGold}
                 displayPlayerGold={displayPlayerGold}
                 displayDealerGold={displayDealerGold}
-                gameId={gameId} 
+                gameId={gameId}
             />
         </div>
     );
