@@ -5,6 +5,40 @@ import { apiFetch } from "../lib/api";
 
 type Mode = "password" | "code";
 
+type CredentialResponse = {
+    credential?: string;
+};
+
+type PromptMomentNotification = {
+    isDismissedMoment?: () => boolean;
+    isNotDisplayed?: () => boolean;
+    isSkippedMoment?: () => boolean;
+    getDismissedReason?: () => string | null;
+    getNotDisplayedReason?: () => string | null;
+    getSkippedReason?: () => string | null;
+};
+
+declare global {
+    interface Window {
+        google?: {
+            accounts?: {
+                id?: {
+                    initialize: (options: {
+                        client_id: string;
+                        callback: (response: CredentialResponse) => void;
+                        ux_mode?: "popup" | "redirect";
+                    }) => void;
+                    prompt: (
+                        momentListener?: (
+                            notification: PromptMomentNotification,
+                        ) => void,
+                    ) => void;
+                };
+            };
+        };
+    }
+}
+
 export default function LoginPage({
     asModal = false,
     open = true,
@@ -89,8 +123,101 @@ export default function LoginPage({
         navigate("/start", { replace: true });
     }
 
-    function loginGoogle() {
-        // Placeholder for Google OAuth flow integration.
+    async function loginGoogle() {
+        setMsg("");
+        const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+        if (!googleClientId) {
+            setMsg("Google Sign-In is not configured.");
+            return;
+        }
+
+        const googleId = window.google?.accounts?.id;
+        if (!googleId) {
+            setMsg("Google Sign-In is not ready yet. Please try again.");
+            return;
+        }
+
+        try {
+            const idToken = await new Promise<string>((resolve, reject) => {
+                let settled = false;
+
+                googleId.initialize({
+                    client_id: googleClientId,
+                    callback: (response) => {
+                        if (settled) return;
+                        const credential = response?.credential;
+                        if (!credential) {
+                            settled = true;
+                            reject(new Error("Google authentication failed."));
+                            return;
+                        }
+                        settled = true;
+                        resolve(credential);
+                    },
+                    ux_mode: "popup",
+                });
+                googleId.prompt((notification) => {
+                    if (settled || !notification) return;
+
+                    if (notification.isDismissedMoment?.()) {
+                        settled = true;
+                        const reason = notification.getDismissedReason?.();
+                        reject(
+                            new Error(
+                                reason === "credential_returned"
+                                    ? "Google authentication failed."
+                                    : "Google sign-in was dismissed.",
+                            ),
+                        );
+                        return;
+                    }
+
+                    if (
+                        notification.isNotDisplayed?.() ||
+                        notification.isSkippedMoment?.()
+                    ) {
+                        settled = true;
+                        const reason =
+                            notification.getNotDisplayedReason?.() ??
+                            notification.getSkippedReason?.() ??
+                            "unknown";
+                        reject(
+                            new Error(
+                                reason === "browser_not_supported"
+                                    ? "Google Sign-In is not supported on this browser."
+                                    : "Google sign-in was not completed.",
+                            ),
+                        );
+                    }
+                });
+
+                setTimeout(() => {
+                    if (!settled) {
+                        settled = true;
+                        reject(new Error("Google sign-in timed out."));
+                    }
+                }, 60000);
+            });
+
+            const response = await apiFetch("/api/auth/login/google", {
+                method: "POST",
+                body: JSON.stringify({ idToken }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || "Google login failed.");
+            }
+
+            localStorage.setItem("token", data.token);
+            navigate("/start", { replace: true });
+        } catch (err) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : "Google authentication failed.";
+            setMsg(message);
+        }
     }
 
     const Form = (
