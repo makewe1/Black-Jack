@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# Black Jack Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **Vite-driven React** experience that guides players from onboarding to gameplay, history, and authentication with immersive visuals and **AI-powered assistance**.
 
-Currently, two official plugins are available:
+**homepage**
+![Black Jack Banner](public/home-pg.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**startpage**
+![Black Jack Banner](public/start-pg.png)
 
-## React Compiler
+**gamepage**
+![Black Jack Banner](public/game-pg.png)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**login-window**
+![Black Jack Banner](public/login-wd.png)
 
-## Expanding the ESLint configuration
+**buy-window**
+![Black Jack Banner](public/buy-wd.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**historypage**
+![Black Jack Banner](public/history-pg.png)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ⚙️ Setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. Install Dependencies
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure client/.env
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+VITE_API_BASE=http://localhost:5174
+VITE_GOOGLE_CLIENT_ID=<your-google-client-id>
 ```
+
+-   `VITE_API_BASE` injects the API origin into every fetch helper call.
+
+-   `VITE_GOOGLE_CLIENT_ID` enables Google One Tap inside the login flow.
+
+## Scripts
+
+| Command           | Description                                            |
+| ----------------- | ------------------------------------------------------ |
+| `npm run dev`     | Start Vite with hot reloading and API proxying.        |
+| `npm run build`   | Type-check with `tsc -b` and emit a production bundle. |
+| `npm run lint`    | Enforce project lint rules.                            |
+| `npm run preview` | Serve the production build locally.                    |
+
+## ✨ Feature Highlights
+
+-   **Routing shell** – React Router provides dedicated routes for home, start, play, login, signup, and history flows.
+-   **Brand-forward hero** – A spinning Three.js gold coin anchors the home screen, complementing CTA modals for login, signup, and guest entry.
+-   **Guest session scaffolding** – Home and Start pages initialize guest bankrolls, purge local history when appropriate, and transition into play or authenticated flows cleanly.
+-   **Table experience** – Game state is synchronized with the API, with bankroll previews, chip betting, action controls, and menu overlays orchestrated across `GamePage`, `GamePanel`, `BottomBar`, `HeaderBar`, and `SideMenu`.
+-   **AI guidance** – In-round AI prompts leverage the `/api/games/:id/ai` endpoint and visually flag recommended actions in the bottom bar.
+-   **Authentication surfaces** – Login and signup support password, email code, and Google OAuth flows with modal-friendly UX patterns, cooldown timers, and clipboard-aware inputs.
+-   **History timeline** – Authenticated users fetch paginated history with retry/abort handling, while guests fall back to local storage data sorted newest-first.
+-   **Offline resilience** – Completed guest rounds persist locally, and session metadata is saved between reloads for both guest and authenticated users.
+
+
+## API Access
+
+All network calls go through `apiFetch`, which injects bearer tokens automatically and centralizes the configured base URL.
