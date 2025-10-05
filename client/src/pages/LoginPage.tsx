@@ -89,38 +89,60 @@ export default function LoginPage({
         navigate("/start", { replace: true });
     }
 
+    function loginGoogle() {
+        // Placeholder for Google OAuth flow integration.
+    }
+
     const Form = (
         <div className="login-form-wrap">
-            <h3
-                className="login-title"
-                style={{ fontFamily: '"Alex Brush", cursive' }}
-            >
-                {title}
-            </h3>
-
-            {/* Segmented switch */}
-            <div className="segment">
-                <button
-                    className={`segment-btn ${
-                        mode === "password" ? "is-active" : ""
-                    }`}
-                    onClick={() => setMode("password")}
+            <div className="login-header">
+                <img
+                    src="/bg-coin.png"
+                    alt="Black Jack Logo"
+                    className="login-logo"
+                />
+                <h3
+                    className="login-title"
+                    style={{ fontFamily: '"Alex Brush", cursive' }}
                 >
-                    Password
-                </button>
-                <button
-                    className={`segment-btn ${
-                        mode === "code" ? "is-active" : ""
-                    }`}
-                    onClick={() => setMode("code")}
-                >
-                    Email Code
-                </button>
+                    Sign in to Black Jack
+                </h3>
             </div>
 
-            {/* Card */}
             <div className="login-card">
-                <label className="label">Email</label>
+                <button
+                    className="btn-google"
+                    onClick={loginGoogle}
+                    type="button"
+                >
+                    <img src="/google-icon.svg" alt="Google" />
+                    <span>Continue with Google</span>
+                </button>
+                <div className="login-divider">
+                    <span>or</span>
+                </div>
+
+                {/* Segmented switch */}
+                <div className="segment">
+                    <button
+                        className={`segment-btn ${
+                            mode === "password" ? "is-active" : ""
+                        }`}
+                        onClick={() => setMode("password")}
+                    >
+                        Password
+                    </button>
+                    <button
+                        className={`segment-btn ${
+                            mode === "code" ? "is-active" : ""
+                        }`}
+                        onClick={() => setMode("code")}
+                    >
+                        Email Code
+                    </button>
+                </div>
+
+                <label className="label mt">Email</label>
                 <input
                     className="input"
                     placeholder="your@email.com"
