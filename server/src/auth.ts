@@ -3,36 +3,90 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { timingSafeEqual } from "node:crypto";
+import { OAuth2Client } from "google-auth-library";
 import { sendVerificationCode } from "./mailer.js";
 import { query } from "./db.js";
 
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || "CHANGE_ME_SECRET";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const googleOAuthClient = GOOGLE_CLIENT_ID
+    ? new OAuth2Client(GOOGLE_CLIENT_ID)
+    : null;
 const CODE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 // ---- DB helpers (Postgres) ----
-async function getUserByEmail(email: string) {
+type DbUserRow = {
+    id: string;
+    email: string;
+    password_hash: string | null;
+    google_sub: string | null;
+};
+
+async function getUserByEmail(email: string): Promise<DbUserRow | null> {
     const { rows } = await query(
-        "select id, email, password_hash from users where lower(email)=lower($1)",
+        "select id, email, password_hash, google_sub from users where lower(email)=lower($1)",
         [email],
     );
-    return rows[0] || null;
+    return (rows[0] as DbUserRow | undefined) || null;
 }
 
 async function createUser(
     email: string,
-    passwordHash: string,
+    passwordHash: string | null,
+    googleSub: string | null = null,
 ): Promise<{
     id: string;
     email: string;
 }> {
     const { rows } = await query(
-        "insert into users (email, password_hash) values ($1,$2) returning id, email",
-        [email, passwordHash],
+        "insert into users (email, password_hash, google_sub) values ($1,$2,$3) returning id, email",
+        [email, passwordHash, googleSub],
     );
     if (!rows[0]) throw new Error("Failed to create user");
     return rows[0];
+}
+
+async function getUserByGoogleSub(
+    googleSub: string,
+): Promise<DbUserRow | null> {
+    const { rows } = await query(
+        "select id, email, password_hash, google_sub from users where google_sub = $1",
+        [googleSub],
+    );
+    return (rows[0] as DbUserRow | undefined) || null;
+}
+
+async function upsertGoogleUser(
+    googleSub: string,
+    email: string,
+): Promise<{ id: string; email: string }> {
+    const existingBySub = await getUserByGoogleSub(googleSub);
+    if (existingBySub) {
+        if (existingBySub.email.toLowerCase() !== email.toLowerCase()) {
+            const { rows } = await query(
+                "update users set email=$1 where id=$2 returning id, email",
+                [email, existingBySub.id],
+            );
+            return (
+                rows[0] || { id: existingBySub.id, email: existingBySub.email }
+            );
+        }
+        return { id: existingBySub.id, email: existingBySub.email };
+    }
+
+    const existingByEmail = await getUserByEmail(email);
+    if (existingByEmail) {
+        const { rows } = await query(
+            "update users set google_sub=$1 where id=$2 returning id, email",
+            [googleSub, existingByEmail.id],
+        );
+        if (!rows[0]) throw new Error("Failed to link Google account");
+        return rows[0];
+    }
+
+    return createUser(email, null, googleSub);
 }
 
 async function upsertEmailCode(
@@ -181,6 +235,47 @@ router.post("/login/password", async (req, res) => {
 
     const token = issueJWT({ id: user.id, email: user.email });
     res.json({ token });
+});
+
+router.post("/login/google", async (req, res) => {
+    const { idToken } = req.body as { idToken?: string };
+
+    if (!idToken || typeof idToken !== "string") {
+        return res.status(400).json({ error: "Invalid request" });
+    }
+
+    if (!GOOGLE_CLIENT_ID || !googleOAuthClient) {
+        console.error("[AUTH] GOOGLE_CLIENT_ID missing for Google login");
+        return res.status(500).json({ error: "Server misconfigured" });
+    }
+
+    let payload: Record<string, any> | undefined;
+    try {
+        const ticket = await googleOAuthClient.verifyIdToken({
+            idToken,
+            audience: GOOGLE_CLIENT_ID,
+        });
+        payload = ticket.getPayload() ?? undefined;
+    } catch (err) {
+        console.error("[AUTH] Google token verification failed:", err);
+        return res.status(400).json({ error: "Invalid token" });
+    }
+
+    const googleSub = typeof payload?.sub === "string" ? payload.sub : null;
+    const email = typeof payload?.email === "string" ? payload.email : null;
+
+    if (!googleSub || !email) {
+        return res.status(400).json({ error: "Invalid token" });
+    }
+
+    try {
+        const user = await upsertGoogleUser(googleSub, email);
+        const token = issueJWT(user);
+        return res.json({ token });
+    } catch (err) {
+        console.error("[AUTH] Failed to persist Google user:", err);
+        return res.status(500).json({ error: "Authentication failed" });
+    }
 });
 
 // Login with email code
