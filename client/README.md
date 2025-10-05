@@ -2,23 +2,35 @@
 
 A **Vite-driven React** experience that guides players from onboarding to gameplay, history, and authentication with immersive visuals and **AI-powered assistance**.
 
-**homepage**
-<img src="./public/home-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
+<p align="center">
+  <strong>homepage</strong><br>
+  <img src="./public/home-pg.png" alt="Black Jack Homepage" style="width:60%; max-width:600px;" />
+</p>
 
-**startpage**
-<img src="./public/start-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
+<p align="center">
+  <strong>startpage</strong><br>
+  <img src="./public/start-pg.png" alt="Black Jack Start Page" style="width:60%; max-width:600px;" />
+</p>
 
-**gamepage**
-<img src="./public/game-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
+<p align="center">
+  <strong>gamepage</strong><br>
+  <img src="./public/game-pg.png" alt="Black Jack Game Page" style="width:60%; max-width:600px;" />
+</p>
 
-**login-window**
-<img src="./public/login-wd.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
+<p align="center">
+  <strong>login-window</strong><br>
+  <img src="./public/login-wd.png" alt="Black Jack Login Window" style="width:30%; max-width:600px;" />
+</p>
 
-**buy-window**
-<img src="./public/buy-wd.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
+<p align="center">
+  <strong>buy-window</strong><br>
+  <img src="./public/buy-wd.png" alt="Black Jack Buy Window" style="width:30%; max-width:600px;" />
+</p>
 
-**historypage**
-<img src="./public/history-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
+<p align="center">
+  <strong>historypage</strong><br>
+  <img src="./public/history-pg.png" alt="Black Jack History Page" style="width:60%; max-width:600px;" />
+</p>
 
 ## Setup
 
