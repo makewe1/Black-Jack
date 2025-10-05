@@ -20,11 +20,19 @@ async function getUserByEmail(email: string) {
     return rows[0] || null;
 }
 
-async function createUser(email: string, passwordHash: string) {
-    await query("insert into users (email, password_hash) values ($1,$2)", [
-        email,
-        passwordHash,
-    ]);
+async function createUser(
+    email: string,
+    passwordHash: string,
+): Promise<{
+    id: string;
+    email: string;
+}> {
+    const { rows } = await query(
+        "insert into users (email, password_hash) values ($1,$2) returning id, email",
+        [email, passwordHash],
+    );
+    if (!rows[0]) throw new Error("Failed to create user");
+    return rows[0];
 }
 
 async function upsertEmailCode(
@@ -75,8 +83,10 @@ function isEmail(s = "") {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
-function issueJWT(email: string) {
-    return jwt.sign({ email }, JWT_SECRET, { expiresIn: "2h" });
+function issueJWT(user: { id: string; email: string }) {
+    return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+        expiresIn: "2h",
+    });
 }
 
 // ---- Helpers ----
@@ -125,72 +135,70 @@ router.post("/request-code", async (req, res) => {
 
 // Signup: verify code + set password (one step after user gets code)
 router.post("/signup/verify", async (req, res) => {
-  const { email, code, password } = req.body as {
-    email: string;
-    code: string;
-    password: string;
-  };
+    const { email, code, password } = req.body as {
+        email: string;
+        code: string;
+        password: string;
+    };
 
-  if (!isEmail(email) || !password || !isSixDigitCode(code)) {
-    return res.status(400).json({ error: "Invalid request" });
-  }
+    if (!isEmail(email) || !password || !isSixDigitCode(code)) {
+        return res.status(400).json({ error: "Invalid request" });
+    }
 
-  const ok = await consumeValidCode(email, code, "signup");
-  if (!ok) {
-    return res.status(400).json({ error: "Invalid or expired code" });
-  }
+    const ok = await consumeValidCode(email, code, "signup");
+    if (!ok) {
+        return res.status(400).json({ error: "Invalid or expired code" });
+    }
 
-  const exists = await getUserByEmail(email);
-  if (exists) {
-    return res.status(400).json({ error: "User exists" });
-  }
+    const exists = await getUserByEmail(email);
+    if (exists) {
+        return res.status(400).json({ error: "User exists" });
+    }
 
-  const passwordHash = await bcrypt.hash(password, 10);
-  await createUser(email, passwordHash);
-
-  const token = issueJWT(email);
-  res.json({ token });
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await createUser(email, passwordHash);
+    const token = issueJWT(user);
+    res.json({ token });
 });
 
 // Login with password
 router.post("/login/password", async (req, res) => {
-  const { email, password } = req.body as { email: string; password: string };
+    const { email, password } = req.body as { email: string; password: string };
 
-  if (!isEmail(email) || !password) {
-    return res.status(400).json({ error: "Invalid request" });
-  }
+    if (!isEmail(email) || !password) {
+        return res.status(400).json({ error: "Invalid request" });
+    }
 
-  const user = await getUserByEmail(email);
-  if (!user || !user.password_hash) {
-    return res.status(400).json({ error: "No such user" });
-  }
+    const user = await getUserByEmail(email);
+    if (!user || !user.password_hash) {
+        return res.status(400).json({ error: "No such user" });
+    }
 
-  const ok = await bcrypt.compare(password, user.password_hash);
-  if (!ok) {
-    return res.status(400).json({ error: "Wrong credentials" });
-  }
+    const ok = await bcrypt.compare(password, user.password_hash);
+    if (!ok) {
+        return res.status(400).json({ error: "Wrong credentials" });
+    }
 
-  const token = issueJWT(email);
-  res.json({ token });
+    const token = issueJWT({ id: user.id, email: user.email });
+    res.json({ token });
 });
-
 
 // Login with email code
 router.post("/login/code", async (req, res) => {
-  const { email, code } = req.body as { email: string; code: string };
+    const { email, code } = req.body as { email: string; code: string };
 
-  if (!isEmail(email) || !isSixDigitCode(code)) {
-    return res.status(400).json({ error: "Invalid request" });
-  }
+    if (!isEmail(email) || !isSixDigitCode(code)) {
+        return res.status(400).json({ error: "Invalid request" });
+    }
 
-  const user = await getUserByEmail(email);
-  if (!user) return res.status(400).json({ error: "No such user" });
+    const user = await getUserByEmail(email);
+    if (!user) return res.status(400).json({ error: "No such user" });
 
-  const ok = await consumeValidCode(email, code, "login");
-  if (!ok) return res.status(400).json({ error: "Invalid or expired code" });
+    const ok = await consumeValidCode(email, code, "login");
+    if (!ok) return res.status(400).json({ error: "Invalid or expired code" });
 
-  const token = issueJWT(email);
-  res.json({ token });
+    const token = issueJWT({ id: user.id, email: user.email });
+    res.json({ token });
 });
 
 export default router;

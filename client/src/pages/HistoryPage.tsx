@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/HistoryPage.css";
+import { apiFetch } from "../lib/api";
 
 type HistoryEntry = {
     id?: string;
@@ -15,30 +16,140 @@ type HistoryEntry = {
 
 export default function HistoryPage() {
     const [history, setHistory] = useState<HistoryEntry[]>([]);
+    const [total, setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const pageSize = 5;
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [authToken, setAuthToken] = useState<string | null>(() =>
+        localStorage.getItem("token"),
+    );
     const nav = useNavigate();
 
     // Prevent React 18 StrictMode dev double-run from mutating/duplicating
     const didInit = useRef(false);
+    const isAuthed = Boolean(authToken);
 
     useEffect(() => {
+        const onStorage = () => {
+            setAuthToken(localStorage.getItem("token"));
+        };
+        window.addEventListener("storage", onStorage);
+        return () => window.removeEventListener("storage", onStorage);
+    }, []);
+
+    useEffect(() => {
+        if (isAuthed) {
+            didInit.current = false; // allow future guest reloads if they log out
+            return;
+        }
         if (didInit.current) return;
         didInit.current = true;
 
         const raw = localStorage.getItem("bj:history");
         const h: HistoryEntry[] = raw ? JSON.parse(raw) : [];
 
-        // clone then reverse; never mutate the array pulled from storage
-        setHistory([...h].reverse());
-    }, []);
+        const ordered = [...h].reverse();
+        setHistory(ordered);
+        setTotal(ordered.length);
+    }, [isAuthed]);
+
+    useEffect(() => {
+        if (!isAuthed) return;
+
+        let cancelled = false;
+        const controller = new AbortController();
+
+        const fetchHistory = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const params = new URLSearchParams({
+                    page: String(page),
+                    pageSize: String(pageSize),
+                });
+                const resp = await apiFetch(
+                    `/api/history?${params.toString()}`,
+                    {
+                        signal: controller.signal,
+                    },
+                );
+                const payload = await resp.json().catch(() => null);
+                if (!resp.ok) {
+                    const message =
+                        (payload as { error?: string } | null)?.error ??
+                        "Failed to load history";
+                    throw new Error(message);
+                }
+                if (cancelled) return;
+                const items = Array.isArray((payload as any)?.items)
+                    ? (payload as any).items
+                    : [];
+                const normalized = items.map((item: any, idx: number) => ({
+                    id:
+                        item?.id ??
+                        item?.gameId ??
+                        `${item?.resultTime ?? ""}-${item?.bet ?? 0}-${idx}`,
+                    status: item?.outcome ?? item?.status ?? "",
+                    playerCards: Array.isArray(item?.playerCards)
+                        ? item.playerCards
+                        : [],
+                    dealerVisible: Array.isArray(item?.dealerCards)
+                        ? item.dealerCards
+                        : [],
+                    playerCount: Number(item?.playerCount) || 0,
+                    dealerCount:
+                        item?.dealerCount === null ||
+                        item?.dealerCount === undefined
+                            ? undefined
+                            : Number(item.dealerCount),
+                    bet: Number(item?.bet) || 0,
+                    resultTime:
+                        typeof item?.resultTime === "string"
+                            ? item.resultTime
+                            : typeof item?.createdAt === "string"
+                            ? item.createdAt
+                            : new Date().toISOString(),
+                }));
+                const totalCount = Number((payload as any)?.total ?? 0);
+                setHistory(normalized);
+                setTotal(totalCount);
+
+                if (totalCount === 0) {
+                    setPage(1);
+                } else {
+                    const totalPages = Math.max(
+                        1,
+                        Math.ceil(totalCount / pageSize),
+                    );
+                    if (page > totalPages) {
+                        setPage(totalPages);
+                    }
+                }
+            } catch (err) {
+                if (cancelled) return;
+                setHistory([]);
+                setTotal(0);
+                setError(err instanceof Error ? err.message : String(err));
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+
+        fetchHistory();
+
+        return () => {
+            cancelled = true;
+            controller.abort();
+        };
+    }, [isAuthed, page, pageSize]);
 
     // If the length changes (e.g., a new game recorded), reset to first page
     useEffect(() => {
-        setPage(1);
-    }, [history.length]);
-
-    const total = history.length;
+        if (!isAuthed) {
+            setPage(1);
+        }
+    }, [isAuthed, history.length]);
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
     const end = Math.min(page * pageSize, total);
@@ -49,8 +160,11 @@ export default function HistoryPage() {
 
     // Slice items for current page
     const current = useMemo(
-        () => history.slice((page - 1) * pageSize, page * pageSize),
-        [history, page],
+        () =>
+            isAuthed
+                ? history
+                : history.slice((page - 1) * pageSize, page * pageSize),
+        [history, isAuthed, page],
     );
 
     // Build page numbers with ellipses (1 … p-1 p p+1 … N)
@@ -98,7 +212,10 @@ export default function HistoryPage() {
             : `Showing ${start}–${end} of ${total} games`}
         </p> */}
 
-                {total === 0 ? (
+                {error && <div className="history-empty">{error}</div>}
+                {loading ? (
+                    <div className="history-empty">Loading history…</div>
+                ) : total === 0 ? (
                     <div className="history-empty">No games played yet.</div>
                 ) : (
                     <>

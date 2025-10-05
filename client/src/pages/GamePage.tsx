@@ -145,6 +145,8 @@ export default function GamePage() {
 
     // save game history on round end
     useEffect(() => {
+        const hasToken = Boolean(localStorage.getItem("token"));
+        if (hasToken) return;
         if (status === "won" || status === "lost" || status === "tie") {
             const history = JSON.parse(
                 localStorage.getItem("bj:history") || "[]",
