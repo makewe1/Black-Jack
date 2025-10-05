@@ -101,15 +101,22 @@ export default function SignupPage({
     }
 
     const Form = (
-        <div className="signup-form-wrap">
-            <h3
-                className="signup-title"
-                style={{ fontFamily: '"Alex Brush", cursive' }}
-            >
-                {title}
-            </h3>
+        <div className="login-form-wrap">
+            <div className="login-header">
+                <img
+                    src="/bg-coin.png"
+                    alt="Black Jack Logo"
+                    className="login-logo"
+                />
+                <h3
+                    className="login-title"
+                    style={{ fontFamily: '"Alex Brush", cursive' }}
+                >
+                    {title}
+                </h3>
+            </div>
 
-            <div className="signup-card">
+            <div className="login-card">
                 <label className="label">Email</label>
                 <div className="row">
                     <input
@@ -122,7 +129,7 @@ export default function SignupPage({
                         type="button"
                         onClick={sendCode}
                         disabled={!email || sending || secondsLeft > 0}
-                        className="btn-primary"
+                        className="btn-secondary signup-send-btn"
                     >
                         {secondsLeft > 0
                             ? `Resend (${secondsLeft}s)`
@@ -161,14 +168,14 @@ export default function SignupPage({
                     Create Account
                 </button>
 
-                {msg && <div className="msg">{msg}</div>}
+                {msg && <div className="msg mt">{msg}</div>}
             </div>
         </div>
     );
 
     if (!asModal) {
         return (
-            <div className="page">
+            <div className="login-page">
                 <div className="page-inner">{Form}</div>
             </div>
         );
