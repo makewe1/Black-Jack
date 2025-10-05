@@ -9,7 +9,7 @@ export default function LoginPage({
     asModal = false,
     open = true,
     onClose,
-    title = "Login",
+    title = "Sign in to Black Jack",
 }: {
     asModal?: boolean;
     open?: boolean;
@@ -105,7 +105,7 @@ export default function LoginPage({
                     className="login-title"
                     style={{ fontFamily: '"Alex Brush", cursive' }}
                 >
-                    Sign in to Black Jack
+                    {title}
                 </h3>
             </div>
 
