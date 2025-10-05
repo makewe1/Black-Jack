@@ -2,7 +2,7 @@
 
 **Black Jack** is a full-stack blackjack platform that pairs a **Vite-powered React SPA** with an **Express + TypeScript API** to deliver AI-guided gameplay, resilient guest sessions, and multi-channel authentication for casual and registered players.
 
-![Black Jack Banner](client/public/bg-coin.png)
+<img src="client/public/bg-coin.png" alt="Black Jack Banner" style="width:50%; max-width:600px;" />
 
 ## Architecture
 

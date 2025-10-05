@@ -3,22 +3,22 @@
 A **Vite-driven React** experience that guides players from onboarding to gameplay, history, and authentication with immersive visuals and **AI-powered assistance**.
 
 **homepage**
-![Black Jack Banner](public/home-pg.png)
+<img src="./public/home-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
 
 **startpage**
-![Black Jack Banner](public/start-pg.png)
+<img src="./public/start-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
 
 **gamepage**
-![Black Jack Banner](public/game-pg.png)
+<img src="./public/game-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
 
 **login-window**
-![Black Jack Banner](public/login-wd.png)
+<img src="./public/login-wd.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
 
 **buy-window**
-![Black Jack Banner](public/buy-wd.png)
+<img src="./public/buy-wd.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
 
 **historypage**
-![Black Jack Banner](public/history-pg.png)
+<img src="./public/history-pg.png" alt="Black Jack Banner" style="width:60%; max-width:600px;" />
 
 ## Setup
 
