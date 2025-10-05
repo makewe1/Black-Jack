@@ -18,7 +18,7 @@ An **Express API** that orchestrates blackjack rounds, enforces authentication, 
 
 Authenticated history is written to **PostgreSQL tables**, while **guest mode** relies on **local storage** to remember bankrolls, active games, and offline results for a seamless return experience.
 
-## 🎮 Core Features
+## Core Features
 
 -   **Deterministic blackjack engine** – In-memory deck management, scoring, reshuffles, and chip settlement encapsulated in TypeScript for predictable results across rounds.
 -   **Guest and authenticated continuity** – Local storage scaffolding ensures guests resume bankrolls and tables, while authenticated sessions persist via tokens and server history records.
@@ -26,7 +26,7 @@ Authenticated history is written to **PostgreSQL tables**, while **guest mode** 
 -   **Multi-channel authentication** – Password, email code, and Google OAuth logins share JWT issuance and verification, with UI flows for modal or page-based entry.
 -   **History tracking** – Completed rounds capture bets, hands, counts, and outcomes for paginated review, supporting both server-backed and offline guest histories.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Install Dependencies
 
@@ -66,9 +66,9 @@ npm run build
 npm run preview
 ```
 
-💡 See each workspace’s package.json for the full script catalog.
+See each workspace’s package.json for the full script catalog.
 
-## ⚙️ Environment Configuration
+## Environment Configuration
 
 Set these variables before booting the server:
 
@@ -85,7 +85,7 @@ Client-side configuration lives in `client/.env`:
 -   **VITE_API_BASE** – Base URL for all API requests.
 -   **VITE_GOOGLE_CLIENT_ID** – Enables Google One Tap login in the UI.
 
-## 🗄️ Database
+## Database
 
 Apply the base schema, then optional migrations, to provision **users**, **email codes**, and **history** tables with supporting indexes and **Google OAuth metadata**.
 

@@ -16,7 +16,7 @@ npm run build    # compile TypeScript
 npm run start    # run compiled output
 ```
 
-💡 See server/package.json for the full command set.
+See server/package.json for the full command set.
 
 ## Environment Variables
 

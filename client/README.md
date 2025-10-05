@@ -20,7 +20,7 @@ A **Vite-driven React** experience that guides players from onboarding to gamepl
 **historypage**
 ![Black Jack Banner](public/history-pg.png)
 
-## ⚙️ Setup
+## Setup
 
 ### 1. Install Dependencies
 
@@ -48,7 +48,7 @@ VITE_GOOGLE_CLIENT_ID=<your-google-client-id>
 | `npm run lint`    | Enforce project lint rules.                            |
 | `npm run preview` | Serve the production build locally.                    |
 
-## ✨ Feature Highlights
+## Feature Highlights
 
 -   **Routing shell** – React Router provides dedicated routes for home, start, play, login, signup, and history flows.
 -   **Brand-forward hero** – A spinning Three.js gold coin anchors the home screen, complementing CTA modals for login, signup, and guest entry.
@@ -58,7 +58,6 @@ VITE_GOOGLE_CLIENT_ID=<your-google-client-id>
 -   **Authentication surfaces** – Login and signup support password, email code, and Google OAuth flows with modal-friendly UX patterns, cooldown timers, and clipboard-aware inputs.
 -   **History timeline** – Authenticated users fetch paginated history with retry/abort handling, while guests fall back to local storage data sorted newest-first.
 -   **Offline resilience** – Completed guest rounds persist locally, and session metadata is saved between reloads for both guest and authenticated users.
-
 
 ## API Access
 
