@@ -1,10 +1,18 @@
 # Black Jack
-
-**Black Jack** is a full-stack blackjack platform that pairs a **Vite-powered React SPA** with an **Express + TypeScript API** to deliver AI-guided gameplay, resilient guest sessions, and multi-channel authentication for casual and registered players.
-
+</div>
 <p align="center">
 <img src="client/public/bg-coin.png" alt="Black Jack Banner" style="width:40%; max-width:600px;" />
 </p>
+
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6.svg?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-18%2B-61DAFB?logo=react)
+![Express](https://img.shields.io/badge/Express-4%2B-000000?logo=express)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-4169E1?logo=postgresql)
+![Vite](https://img.shields.io/badge/Vite-5%2B-646CFF?logo=vite)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+<img alt="Version" src="https://img.shields.io/badge/Version-v0.1-orange" />
+**Black Jack** is a full-stack blackjack platform that pairs a **Vite-powered React SPA** with an **Express + TypeScript API** to deliver AI-guided gameplay, resilient guest sessions, and multi-channel authentication for casual and registered players.
+
 
 ## Architecture
 
