@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/GameButton.css";
+import { apiFetch } from "../lib/api";
 
 type GuestSession = {
     mode: "guest";
@@ -61,6 +62,23 @@ export default function StartPage() {
             };
             saveSession(patched);
         }
+        // Warm the backend so the first real request (deal / buy) is fast.
+        if (typeof window !== "undefined") {
+            const controller = new AbortController();
+            const timeout = window.setTimeout(() => controller.abort(), 4000);
+            apiFetch("/healthz", { signal: controller.signal }).catch(() => {
+                /* ignore warm-up errors */
+            });
+
+            return () => {
+                window.clearTimeout(timeout);
+                controller.abort();
+            };
+        }
+
+        return () => {
+            /* no-op on the server */
+        };
     }, []);
 
     const onContinue = () => {
